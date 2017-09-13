@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lua/sol.hpp"
+#include "sol.hpp"
 #include "traits.hpp"
 
 namespace putils

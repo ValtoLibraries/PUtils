@@ -209,7 +209,7 @@ namespace putils
 
         double angleToXY(const Point<Precision, 3> &rhs) const noexcept
         {
-            return -std::atan2(rhs.y - y, rhs.x - x) + M_PI / 2;
+            return std::atan2(rhs.y - y, rhs.x - x);
         }
 
         double angleToXZ(const Point<Precision, 3> &rhs) const noexcept
