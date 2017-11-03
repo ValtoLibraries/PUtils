@@ -29,6 +29,9 @@ namespace putils
                 std::size_t openBraces = 0;
                 std::string str;
 
+                while (std::isspace(s.peek()))
+                    s.get();
+
                 while (s)
                 {
                     const char c = s.get();

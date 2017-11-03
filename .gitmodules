@@ -4,3 +4,6 @@
 [submodule "pse/SFML"]
 	path = pse/SFML
 	url = git@github.com:phiste/SFML
+[submodule "googletest"]
+	path = googletest
+	url = git@github.com:google/googletest

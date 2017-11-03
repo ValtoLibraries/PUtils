@@ -2,6 +2,7 @@
 
 #include <string>
 #include <string_view>
+#include "runTests.hpp"
 
 namespace putils
 {

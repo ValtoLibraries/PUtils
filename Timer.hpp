@@ -11,8 +11,9 @@ namespace putils
     class Timer
     {
     public:
-        using t_clock = std::chrono::system_clock;
+        using t_clock = std::chrono::steady_clock;
         using t_duration = std::chrono::duration<double, std::ratio<1>>;
+        using seconds = t_duration;
 
         // Constructors
     public:
@@ -51,12 +52,9 @@ namespace putils
 
         t_duration getTimeSinceDone() const noexcept
         {
-            const auto done = t_clock::now() - _start;
-
-            if (_duration == _duration.zero())
-                return done - std::size_t(0) * _duration;
-
-            return done - (getTimesDone() * _duration);
+            // return t_clock::now() - (_start + _duration);
+            const auto elapsed = std::chrono::duration_cast<seconds>(t_clock::now() - _start);
+            return elapsed - _duration;
         }
 
         // How long until it rings
@@ -74,6 +72,8 @@ namespace putils
 
         void setStart(t_clock::time_point start)
         { _start = start; }
+
+        const t_clock::time_point &getStart() const { return _start; }
 
         void stop()
         { _stopped = true; }

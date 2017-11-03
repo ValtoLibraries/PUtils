@@ -48,7 +48,7 @@ namespace putils
             struct sockaddr_in server;
             server.sin_family = AF_INET;
             server.sin_port = htons(port);
-            server.sin_addr.s_addr = inet_addr(host.c_str());
+            server.sin_addr.s_addr = inet_addr(host.data());
 
             if (connect(_socket, (struct sockaddr *) (&server), sizeof(server)) == -1)
                 throw std::runtime_error("Failed to connect");

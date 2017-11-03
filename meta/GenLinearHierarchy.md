@@ -9,10 +9,10 @@ template<
     template<class> class T,
     typename U,
     typename ...TList>
-class GenLinearHierarchy<T, std::tuple<U, TList...>>
+class GenLinearHierarchy<T, U, TList...>
     :
     public T<U>,
-    public GenLinearHierarchy<T, std::tuple<TList...>>
+    public GenLinearHierarchy<T, TList...>
 {
 };
 ```

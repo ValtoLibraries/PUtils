@@ -227,7 +227,6 @@ namespace putils
                         std::cout << "[" << line << "]" << std::endl;
                         system(line.c_str());
                     }
-
             ).run();
         }
     }

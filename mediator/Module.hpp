@@ -78,40 +78,4 @@ namespace putils
     private:
         std::unordered_map<pmeta::type_index, std::function<void(const putils::ADataPacket &)>> _handlers;
     };
-
-    namespace test
-    {
-        inline void mediator()
-        {
-            struct ExampleQuery
-            {
-                std::string data;
-                BaseModule *sender;
-            };
-
-            struct LogModule : putils::Module<LogModule, std::string, ExampleQuery> // will receive std::strings and ExampleQueries
-            {
-                void handle(std::string_view packet) const { std::cout << "Received " << packet << std::endl; }
-
-                void handle(const ExampleQuery &packet) const { sendTo(42, *packet.sender); }
-            };
-
-            struct SenderModule : putils::Module<SenderModule> // will not receive anything
-            {
-                void doWork() const { send(std::string("hi there!")); }
-
-                void doQuery() { std::cout << "Query result is " << query<int>(ExampleQuery{ "data", nullptr }) << std::endl; }
-            };
-
-            Mediator mediator;
-            SenderModule sender;
-            LogModule log;
-
-            mediator.addModule(sender);
-            mediator.addModule(log);
-
-            sender.doWork();
-            sender.doQuery();
-        }
-    }
 }

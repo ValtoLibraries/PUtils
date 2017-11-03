@@ -5,7 +5,9 @@
 #include <tuple>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include "meta/for_each.hpp"
+#include "chop.hpp"
 
 namespace putils
 {
@@ -169,55 +171,4 @@ namespace putils
         std::unordered_map<Key, std::tuple<Fields...>> _rows;
         std::vector<std::pair<const Key, std::tuple<Fields...>> *> _orderedRows;
     };
-
-
-    /*
-     * Example
-     */
-
-    namespace test
-    {
-        void csv()
-        {
-            putils::Csv<';', int, int, std::string, char> csv("test.csv");
-            // putils::Csv<',', std::string, std::string> csv("B-PAV-242 PAR.csv");
-
-            // Iterate through rows and output them
-            for (auto p : csv.getRows())
-            {
-                const auto &key = p->first;
-                const auto &t = p->second;
-
-                std::cout << "[" << key << "]" << "\t";
-                // Iterate through fields in row
-                pmeta::tuple_for_each(t, [](auto &attr)
-                {
-                    std::cout << "'" << attr << "'" << "\t";
-                });
-                std::cout << std::endl;
-            }
-
-            // Copy all rows to a new csv
-            putils::Csv<',', int, int, std::string, char> output;
-            for (auto &p : csv.getRows())
-                output.add(p->first, p->second);
-
-            output.add(21, 21, "BOB LE BRICOLEUR", 'x');
-            output.dump(std::cout);
-
-            // Parse the CSV with the following actions
-            output.parse(
-                    // Key action
-                    [](auto &&key){ std::cout << "KEY: " << key << std::endl; },
-                    // Fields actions
-                    {
-                            [](auto &&first) { std::cout << "FIRST: " << first << std::endl; },
-                            [](auto &&second) { std::cout << "SECOND: " << second << std::endl; },
-                            [](auto &&third) { std::cout << "THIRD: " << third << std::endl; }
-                    },
-                    // End of row action
-                    []() { std::cout << "END" << std::endl; }
-            );
-        }
-    }
 }

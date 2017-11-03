@@ -15,3 +15,13 @@ endif()
 file(GLOB src *.hpp)
 add_library(putils INTERFACE)
 target_include_directories(putils INTERFACE .)
+
+if(PUTILS_TEST)
+    set(test_name putils_test)
+    add_subdirectory(googletest)
+    file(GLOB testSrc
+            test/*.cpp test/*.hpp
+            test/*/*.cpp test/*/*.hpp)
+    add_executable(${test_name} ${testSrc})
+    target_link_libraries(${test_name} putils mediator connection pluginManager gtest_main)
+endif()

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string_view>
 #include <regex>
 
 bool operator==(std::string_view str, const std::regex &reg)
@@ -22,21 +23,4 @@ std::pair<std::regex, bool> operator""_m(const char *str, long unsigned int)
 std::regex operator""_r(const char *str, long unsigned int)
 {
     return std::regex(str);
-}
-
-namespace putils
-{
-    namespace test
-    {
-        inline void regex()
-        {
-            // Get bool with _r
-            assert("toto" == R"(^t.*$)"_r);
-
-            // Get match with _m
-            auto m = ("t.oto" == R"(^t\.(.*)$)"_m);
-
-            assert(m[1] == "oto");
-        }
-    }
 }

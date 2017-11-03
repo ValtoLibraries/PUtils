@@ -56,7 +56,7 @@ namespace putils
 
         double angleTo(const Point<Precision, 3> &rhs) const noexcept
         {
-            return -std::atan2(rhs.y - y, rhs.x - x) + M_PI / 2;
+            return std::atan2(rhs.y - y, rhs.x - x);
         }
 
         static const auto get_class_name() { return "Point2"; }
@@ -113,9 +113,9 @@ namespace putils
                 );
 
             return !(topLeft.x >= other.topLeft.x + other.size.x ||
-                     topLeft.x + size.x < other.topLeft.x ||
+                     topLeft.x + size.x <= other.topLeft.x ||
                      topLeft.y >= other.topLeft.y + other.size.y ||
-                     topLeft.y + size.y < other.topLeft.y
+                     topLeft.y + size.y <= other.topLeft.y
             );
         }
 
@@ -214,7 +214,7 @@ namespace putils
 
         double angleToXZ(const Point<Precision, 3> &rhs) const noexcept
         {
-            return -std::atan2(rhs.z - z, rhs.x - x) + M_PI / 2;
+            return std::atan2(rhs.z - z, rhs.x - x);
         }
 
         static const auto get_class_name() { return "Point3"; }
@@ -347,5 +347,11 @@ namespace std
             return putils::PairHash().operator()(std::make_pair(coord.x, coord.y));
         }
     };
+}
+
+namespace putils
+{
+    template<typename Precision>
+    using PointHash = std::hash<putils::Point<Precision>>;
 }
 

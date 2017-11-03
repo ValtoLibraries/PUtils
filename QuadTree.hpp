@@ -46,12 +46,9 @@ namespace putils
                 good |= c.add(obj, boundingBox);
 
             if (!good)
-            {
                 std::cerr << "[QuadTree] Couldn't add object. This should never happen." << std::endl;
-                return false;
-            }
 
-            return true;
+            return good;
         }
 
     public:
@@ -78,20 +75,22 @@ namespace putils
         }
 
     public:
-        std::vector<Obj> query(const Rect<Precision> &area) const noexcept
+        std::vector<Contained> query(const Rect<Precision> &area) const noexcept
         {
-            std::vector<Obj> ret;
+            std::vector<Contained> ret;
 
             if (!_boundingBox.intersect(area))
                 return ret;
 
             for (const auto &i : _items)
                 if (area.intersect(i.boundingBox))
-                    ret.push_back(i);
+                    ret.push_back(i.obj);
 
             for (const auto &c : _children)
                 for (const auto &obj : c.query(area))
-                    ret.push_back(obj);
+                    if (std::find_if(ret.begin(), ret.end(),
+                                     [&obj](auto &&other) { return obj == other; }) == ret.end())
+                        ret.push_back(obj);
 
             return ret;
         }
@@ -111,23 +110,4 @@ namespace putils
         std::vector<QuadTree> _children;
         Rect<Precision> _boundingBox;
     };
-
-    namespace test
-    {
-        inline void quadTree()
-        {
-            putils::QuadTree<int> tree({ { 0, 0 }, { 16, 16 } });
-
-            int id = 0;
-            for (int x = 0; x < 8; ++x)
-                for (int y = 0; y < 8; ++y)
-                    tree.add(++id, { { x, y }, { 1, 1 } });
-
-            tree.add(4242, { { 3, 3 }, { 2, 2 } });
-
-            const auto objects = tree.query({ { 0, 0 }, { 4, 4 } });
-            for (const auto &obj : objects)
-                std::cout << obj.obj << " -- " << obj.boundingBox << std::endl;
-        }
-    }
 }

@@ -7,6 +7,7 @@
 
 #include "fwd.hpp"
 #include "Point.hpp"
+#include "runTests.hpp"
 
 namespace putils
 {
@@ -80,22 +81,22 @@ namespace putils
 
     template<typename Contained>
     CellularAutomaton<Contained>::CellularAutomaton(std::vector<Cell<Contained>> &&cells, std::size_t dimensions)
-        : _cells(std::move(cells)),  _dimensions(dimensions)
-        {
-        }
+            : _cells(std::move(cells)),  _dimensions(dimensions)
+    {
+    }
 
     template<typename Contained>
     CellularAutomaton<Contained>::CellularAutomaton(
-                const putils::Point<std::size_t> &size,
-                const Contained &value,
-                const putils::Point<int> &start,
-                std::size_t dimensions)
-        : _dimensions(dimensions)
-        {
-            for (std::size_t x = 0; x < size.x; ++x)
-                for (std::size_t y = 0; y < size.y; ++y)
-                    _cells.push_back({ { (int)x + start.x, (int)y + start.y }, value });
-        }
+            const putils::Point<std::size_t> &size,
+            const Contained &value,
+            const putils::Point<int> &start,
+            std::size_t dimensions)
+            : _dimensions(dimensions)
+    {
+        for (std::size_t x = 0; x < size.x; ++x)
+            for (std::size_t y = 0; y < size.y; ++y)
+                _cells.push_back({ { (int)x + start.x, (int)y + start.y }, value });
+    }
 
 
     /*
@@ -103,71 +104,36 @@ namespace putils
      */
 
     template<typename Contained>
-        std::vector<const Cell<Contained> *> CellularAutomaton<Contained>::getNeighbors(const Point<int, 3> &pos) const noexcept
-        {
-            std::vector<const Cell<Contained> *> ret;
+    std::vector<const Cell<Contained> *> CellularAutomaton<Contained>::getNeighbors(const Point<int, 3> &pos) const noexcept
+    {
+        std::vector<const Cell<Contained> *> ret;
 
-            for (const auto &c : _cells)
-                if ((x_neighbor(c.pos, pos) || y_neighbor(c.pos, pos)) &&
-                        _dimensions == 2 || y_neighbor(c.pos, pos))
-                    ret.push_back(&c);
+        for (const auto &c : _cells)
+            if ((x_neighbor(c.pos, pos) || y_neighbor(c.pos, pos)) &&
+                _dimensions == 2 || y_neighbor(c.pos, pos))
+                ret.push_back(&c);
 
-            return ret;
-        }
+        return ret;
+    }
 
     template<typename Contained>
-        const std::vector<Cell<Contained>> &CellularAutomaton<Contained>::step(
-                const ModifierCondition &condition,
-                const Modifier &modifier,
-                const NeighborFetcher &fetcher) noexcept
-        {
-            std::vector<Cell<Contained>> _newCells(_cells);
+    const std::vector<Cell<Contained>> &CellularAutomaton<Contained>::step(
+            const ModifierCondition &condition,
+            const Modifier &modifier,
+            const NeighborFetcher &fetcher) noexcept
+    {
+        std::vector<Cell<Contained>> _newCells(_cells);
 
-            for (auto &cell : _newCells)
-            {
-                const auto neighbors =
+        for (auto &cell : _newCells)
+        {
+            const auto neighbors =
                     (fetcher == nullptr) ? getNeighbors(cell.pos) : fetcher(_cells, cell.pos);
 
-                if (condition(neighbors, cell))
-                    modifier(cell);
-            }
-
-            _cells = std::move(_newCells);
-            return _cells;
+            if (condition(neighbors, cell))
+                modifier(cell);
         }
 
-    /*
-     * Example
-     */
-
-    namespace test
-    {
-        inline void cellularAutomaton()
-        {
-            CellularAutomaton<bool> ca(
-                    {
-                            { { 0 }, false },
-                            { { 1 }, false },
-                            { { 2 }, true },
-                            { { 3 }, false },
-                            { { 4 }, false },
-                    }
-            );
-
-            const auto &cells = ca.step(
-                    [](const std::vector<const Cell<bool> *> &neighbors, const Cell<bool> &cell)
-                    {
-                        return std::find_if(neighbors.begin(), neighbors.end(), [](auto &&ptr){ return ptr->obj; })
-                               != neighbors.end();
-                    },
-                    [](Cell<bool> &cell)
-                    {
-                        cell.obj = !cell.obj;
-                    }
-            );
-
-            for (const auto &c : cells)
-                std::cout << std::boolalpha << c.obj << std::endl;
-        }
+        _cells = std::move(_newCells);
+        return _cells;
     }
 }

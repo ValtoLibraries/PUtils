@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iomanip>
 #include "read_stream.hpp"
+#include "fwd.hpp"
 
 namespace putils
 {

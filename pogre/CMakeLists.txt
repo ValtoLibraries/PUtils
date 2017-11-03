@@ -61,14 +61,12 @@ elseif(WIN32)
 endif()
 
 add_library(pogre ${type} ${src})
-target_include_directories(pogre
-        PUBLIC .
-        ${OGRE_INCLUDE_DIRS} ${CEGUI_INCLUDE_DIR} SDL2/include)
-target_link_libraries(pogre
-        PUBLIC putils
-        ${OGRE_LIBRARIES} ${OGRE_Bites_LIBRARIES} ${OGRE_RTShaderSystem_LIBRARIES}
-        ${CEGUI_LIBRARIES} ${CEGUI_OgreRenderer_LIBRARIES})
+target_include_directories(pogre PUBLIC . ${OGRE_INCLUDE_DIRS} SDL2/include)
+target_link_libraries(pogre PUBLIC putils
+    ${OGRE_LIBRARIES} ${OGRE_Bites_LIBRARIES} ${OGRE_RTShaderSystem_LIBRARIES})
 
 if(CEGUI_FOUND)
+    target_include_directories(pogre PUBLIC ${CEGUI_INCLUDE_DIR})
+    target_link_libraries(pogre PUBLIC ${CEGUI_LIBRARIES} ${CEGUI_OgreRenderer_LIBRARIES})
     target_compile_definitions(pogre PUBLIC POGRE_CEGUI)
 endif()

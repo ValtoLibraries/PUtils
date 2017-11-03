@@ -4,6 +4,7 @@
 #include <tuple>
 #include "meta/type.hpp"
 #include "meta/GenLinearHierarchy.hpp"
+#include "runTests.hpp"
 
 namespace putils
 {
@@ -23,9 +24,9 @@ namespace putils
     //
     // To build an object of type T, use factory.make<T>()
     //
-    template<typename ...TList>
+    template<typename ...Types>
     class AbstractFactory :
-            public pmeta::GenLinearHierarchy<AbstractFactoryUnit, std::tuple<TList...>>
+            public pmeta::GenLinearHierarchy<AbstractFactoryUnit, Types...>
     {
         // Make an object of type T by casting myself to the right AbstractFactoryUnit
     public:
@@ -36,25 +37,5 @@ namespace putils
             return unit.makeImpl(pmeta::type<T>());
         }
     };
-
-    namespace test
-    {
-        inline void abstractFactory()
-        {
-            class CFactory : public AbstractFactory<int, double>
-            {
-                std::unique_ptr<int> makeImpl(pmeta::type<int>) noexcept final { return std::make_unique<int>(0); }
-                std::unique_ptr<double> makeImpl(pmeta::type<double>) noexcept final { return std::make_unique<double>(42); }
-            };
-
-            CFactory factory;
-
-            auto i = *(factory.make<int>());
-            auto d = *(factory.make<double>());
-
-            assert(i == 0);
-            assert(d == 42);
-        }
-    }
 }
 

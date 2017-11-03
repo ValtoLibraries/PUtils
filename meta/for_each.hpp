@@ -1,6 +1,8 @@
 #pragma once
 
 #include <functional>
+#include "type.hpp"
+#include "fwd.hpp"
 
 namespace pmeta
 {
@@ -18,16 +20,6 @@ namespace pmeta
         {
             f(std::get<I>(tuple));
             detail::tuple_for_each(std::forward<F>(f), tuple, std::index_sequence<Is...>());
-        }
-
-        template<template<typename> typename Func>
-        void for_each() {}
-
-        template<template<typename> typename Func, typename T, typename ...Args>
-        void for_each()
-        {
-            Func<T>::func();
-            detail::for_each<Func, Args...>();
         }
     }
 
@@ -50,30 +42,5 @@ namespace pmeta
     void tuple_for_each(const std::tuple<Args...> &tuple, F &&f)
     {
         detail::tuple_for_each(std::forward<F>(f), tuple, std::index_sequence_for<Args...>());
-    }
-
-    // For each type `T` in `Args`, call `Func<T>::func()`
-    // Func: class with a static void func() function
-    template<template<typename> typename Func, typename ...Args>
-    void for_each()
-    {
-        detail::for_each<Func, Args...>();
-    }
-
-    namespace test
-    {
-        template<typename T>
-        struct TestFunc
-        {
-            static void func()
-            {
-                // Do something with T
-            }
-        };
-
-        inline void for_each()
-        {
-            pmeta::for_each<TestFunc, int, std::string>();
-        }
     }
 }
