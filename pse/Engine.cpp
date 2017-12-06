@@ -11,17 +11,14 @@ namespace pse {
 #ifdef PSE_TGUI
     , _tgui(_window)
 #endif
-    {
-    }
+    {}
 
     void Engine::update(bool clear) noexcept {
         if (clear)
             displayColor(sf::Color::Black);
 
         refreshMovingItems();
-
         drawItems();
-
 #ifdef PSE_TGUI
         _tgui.draw();
 #endif
@@ -49,8 +46,7 @@ namespace pse {
                 sf::Vector2f dist = item->getDestination() - item->getPreviousPosition();
                 dist *= coeff;
                 item->setPosition(item->getPosition() + dist);
-            } else // Item has reached destination, say it shouldn't move anymore
-            {
+            } else { // Item has reached destination, say it shouldn't move anymore
                 item->setDelay(-1);
                 item->setDestination({ -1, -1 });
             }
