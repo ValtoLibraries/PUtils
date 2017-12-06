@@ -62,9 +62,8 @@ namespace putils {
         // Notify observers that the observable has changed
     public:
         void changed(const Args & ...args) noexcept {
-            for (const auto &
-            [_, func] : _observers)
-            func(args...);
+            for (const auto & [_, func] : _observers)
+                func(args...);
         }
         void operator()(const Args & ...args) noexcept { changed(args...); }
 
