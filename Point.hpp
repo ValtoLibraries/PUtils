@@ -62,28 +62,16 @@ namespace putils {
             return std::atan2(rhs.y - y, rhs.x - x);
         }
 
-        static const auto get_class_name() { return "Point2"; }
-
-        static const auto & get_attributes() {
-            static const auto table = pmeta::make_table(
-                    pmeta_reflectible_attribute(&Point::x),
-                    pmeta_reflectible_attribute(&Point::y)
-            );
-            return table;
-        }
-
-        static const auto & get_methods() {
-            static const auto table = pmeta::make_table(
-                    pmeta_nameof(distanceTo), &Point::distanceTo<Precision>,
-                    pmeta_reflectible_attribute(&Point::angleTo)
-            );
-            return table;
-        }
-
-        static const auto & get_parents() {
-            static const auto table = pmeta::make_table();
-            return table;
-        }
+        pmeta_get_class_name("Point2");
+        pmeta_get_attributes(
+                pmeta_reflectible_attribute(&Point::x),
+                pmeta_reflectible_attribute(&Point::y)
+        );
+        pmeta_get_methods(
+                pmeta_nameof(distanceTo), &Point::distanceTo<Precision>,
+                pmeta_reflectible_attribute(&Point::angleTo)
+        );
+        pmeta_get_parents();
     };
 
     template<typename Precision, std::size_t Dimensions = 2>
@@ -124,28 +112,16 @@ namespace putils {
             );
         }
 
-        static const auto get_class_name() { return "Rect2"; }
-
-        static const auto & get_attributes() {
-            static const auto table = pmeta::make_table(
-                    pmeta_reflectible_attribute(&Rect::topLeft),
-                    pmeta_reflectible_attribute(&Rect::size)
-            );
-            return table;
-        }
-
-        static const auto & get_methods() {
-            static const auto table = pmeta::make_table(
-                    pmeta_reflectible_attribute(&Rect::intersect),
-                    pmeta_reflectible_attribute(&Rect::contains)
-            );
-            return table;
-        }
-
-        static const auto & get_parents() {
-            static const auto table = pmeta::make_table();
-            return table;
-        }
+        pmeta_get_class_name("Rect2");
+        pmeta_get_attributes(
+                pmeta_reflectible_attribute(&Rect::topLeft),
+                pmeta_reflectible_attribute(&Rect::size)
+        );
+        pmeta_get_methods(
+                pmeta_reflectible_attribute(&Rect::intersect),
+                pmeta_reflectible_attribute(&Rect::contains)
+        );
+        pmeta_get_parents();
     };
 
     template<typename Precision>
@@ -214,30 +190,18 @@ namespace putils {
             return std::atan2(rhs.z - z, rhs.x - x);
         }
 
-        static const auto get_class_name() { return "Point3"; }
-
-        static const auto & get_attributes() {
-            static const auto table = pmeta::make_table(
-                    pmeta_reflectible_attribute(&Point::x),
-                    pmeta_reflectible_attribute(&Point::y),
-                    pmeta_reflectible_attribute(&Point::z)
-            );
-            return table;
-        }
-
-        static const auto & get_methods() {
-            static const auto table = pmeta::make_table(
-                    pmeta_nameof(distanceTo), &Point::distanceTo<Precision>,
-                    pmeta_reflectible_attribute(&Point::angleToXY),
-                    pmeta_reflectible_attribute(&Point::angleToXZ)
-            );
-            return table;
-        }
-
-        static const auto & get_parents() {
-            static const auto table = pmeta::make_table();
-            return table;
-        }
+        pmeta_get_class_name("Point3");
+        pmeta_get_attributes(
+                pmeta_reflectible_attribute(&Point::x),
+                pmeta_reflectible_attribute(&Point::y),
+                pmeta_reflectible_attribute(&Point::z)
+        );
+        pmeta_get_methods(
+                pmeta_nameof(distanceTo), &Point::distanceTo<Precision>,
+                pmeta_reflectible_attribute(&Point::angleToXY),
+                pmeta_reflectible_attribute(&Point::angleToXZ)
+        );
+        pmeta_get_parents();
     };
 
     template<typename Precision>
@@ -284,28 +248,16 @@ namespace putils {
             );
         }
 
-        static const auto get_class_name() { return "Rect3"; }
-
-        static const auto & get_attributes() {
-            static const auto table = pmeta::make_table(
-                    pmeta_reflectible_attribute(&Rect::topLeft),
-                    pmeta_reflectible_attribute(&Rect::size)
-            );
-            return table;
-        }
-
-        static const auto & get_methods() {
-            static const auto table = pmeta::make_table(
-                    pmeta_reflectible_attribute(&Rect::intersect),
-                    pmeta_reflectible_attribute(&Rect::contains)
-            );
-            return table;
-        }
-
-        static const auto & get_parents() {
-            static const auto table = pmeta::make_table();
-            return table;
-        }
+        pmeta_get_class_name("Rect3");
+        pmeta_get_attributes(
+                pmeta_reflectible_attribute(&Rect::topLeft),
+                pmeta_reflectible_attribute(&Rect::size)
+        );
+        pmeta_get_methods(
+                pmeta_reflectible_attribute(&Rect::intersect),
+                pmeta_reflectible_attribute(&Rect::contains)
+        );
+        pmeta_get_parents();
     };
 
     using Point3d = Point<double, 3>;
