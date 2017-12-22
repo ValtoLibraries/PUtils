@@ -11,6 +11,20 @@
 #define pmeta_reflectible_attribute_private(memberPtr) std::string_view(#memberPtr).substr(std::string_view(#memberPtr).find("::") + 3), memberPtr
 #define pmeta_reflectible_parent(T) pmeta_nameof(T), pmeta::type<T>()
 
+#define pmeta_get_class_name(className) static const auto get_class_name() { return pmeta_nameof(className); }
+#define pmeta_get_attributes(...) static const auto & get_attributes() { \
+    static const auto table = pmeta::make_table(__VA_ARGS__); \
+    return table; \
+}
+#define pmeta_get_methods(...) static const auto & get_methods() { \
+    static const auto table = pmeta::make_table(__VA_ARGS__); \
+    return table; \
+}
+#define pmeta_get_parents(...) static const auto & get_parents() { \
+    static const auto table = pmeta::make_table(__VA_ARGS__); \
+    return table; \
+}
+
 namespace putils
 {
     template<typename CRTP>
