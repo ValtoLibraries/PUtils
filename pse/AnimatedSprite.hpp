@@ -12,7 +12,7 @@ namespace pse {
         // Constructor
     public:
         AnimatedSprite(
-                std::string_view texture,
+                const std::string & texture,
                 const sf::Vector2f & pos,
                 const sf::Vector2f & size,
                 size_t animations,
@@ -86,7 +86,7 @@ namespace pse {
 
         // Texture setter
     public:
-        void setTexture(std::string_view texture) noexcept override;
+        void setTexture(const std::string & texture) noexcept override;
 
         // Tiles getters and setters
     public:

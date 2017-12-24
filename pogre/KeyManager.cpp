@@ -11,12 +11,12 @@ namespace pogre
             _currentState->_keyHandlersToAdd[key].push_back({ onPress, onRelease });
         }
 
-        void KeyManager::addKeyHandler(std::string_view state,
+        void KeyManager::addKeyHandler(const std::string & state,
                                        SDL_Keycode key, const KeyManager::KeyHandler &onPress,
                                        const KeyManager::KeyHandler &onRelease) noexcept
         {
-            Lock _(_states[state.data()]._keyHandlersMutex);
-            _states[state.data()]._keyHandlersToAdd[key].push_back({ onPress, onRelease });
+            Lock _(_states[state]._keyHandlersMutex);
+            _states[state]._keyHandlersToAdd[key].push_back({ onPress, onRelease });
         }
 
         void KeyManager::addKeyHandler(const AnyKeyHandler &onPress, const AnyKeyHandler &onRelease) noexcept
@@ -25,11 +25,11 @@ namespace pogre
             _currentState->_anyKeyHandlersToAdd.push_back({ onPress, onRelease });
         }
 
-        void KeyManager::addKeyHandler(std::string_view state,
+        void KeyManager::addKeyHandler(const std::string & state,
                                        const AnyKeyHandler &onPress, const AnyKeyHandler &onRelease) noexcept
         {
-            Lock _(_states[state.data()]._keyHandlersMutex);
-            _states[state.data()]._anyKeyHandlersToAdd.push_back({ onPress, onRelease });
+            Lock _(_states[state]._keyHandlersMutex);
+            _states[state]._anyKeyHandlersToAdd.push_back({ onPress, onRelease });
         }
 
         void KeyManager::updateKeyHandlers() noexcept
@@ -80,10 +80,10 @@ namespace pogre
             _currentState->_mouseMoveHandlersToAdd.push_back(func);
         }
 
-        void KeyManager::addMouseMovedHandler(std::string_view state, const KeyManager::MouseMovedHandler &func) noexcept
+        void KeyManager::addMouseMovedHandler(const std::string & state, const KeyManager::MouseMovedHandler &func) noexcept
         {
-            Lock _(_states[state.data()]._mouseHandlersMutex);
-            _states[state.data()]._mouseMoveHandlersToAdd.push_back(func);
+            Lock _(_states[state]._mouseHandlersMutex);
+            _states[state]._mouseMoveHandlersToAdd.push_back(func);
         }
 
         void KeyManager::addMouseButtonHandler(const MouseButtonHandler &onPress, const MouseButtonHandler &onRelease) noexcept
@@ -92,11 +92,11 @@ namespace pogre
             _currentState->_mouseButtonHandlersToAdd.push_back({ onPress, onRelease });
         }
 
-        void KeyManager::addMouseButtonHandler(std::string_view state,
+        void KeyManager::addMouseButtonHandler(const std::string & state,
                                                const MouseButtonHandler &onPress, const MouseButtonHandler &onRelease) noexcept
         {
-            Lock _(_states[state.data()]._mouseHandlersMutex);
-            _states[state.data()]._mouseButtonHandlersToAdd.push_back({ onPress, onRelease });
+            Lock _(_states[state]._mouseHandlersMutex);
+            _states[state]._mouseButtonHandlersToAdd.push_back({ onPress, onRelease });
         }
 
         void KeyManager::updateMouseHandlers() noexcept

@@ -86,8 +86,9 @@ namespace putils {
         }
 
     public:
-        void addCommand(std::string_view cmd, const Command & func) {
-            _funcs[cmd.data()] = func;
+        template<typename String>
+        void addCommand(String && cmd, const Command & func) {
+            _funcs[FWD(cmd)] = func;
         }
 
     public:

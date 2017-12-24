@@ -13,7 +13,7 @@ namespace pse {
     class Sprite : public ViewItem {
         // Constructor
     public:
-        Sprite(std::string_view texture, const sf::Vector2f & pos, const sf::Vector2f & size);
+        Sprite(const std::string & texture, const sf::Vector2f & pos, const sf::Vector2f & size);
 
         // Destructor
     public:
@@ -35,9 +35,9 @@ namespace pse {
 
         // Texture getters and setters
     public:
-        virtual void setTexture(std::string_view texture);
+        virtual void setTexture(const std::string & texture);
 
-        std::string_view getTextureFile() const noexcept { return _textureFile; }
+        const std::string & getTextureFile() const noexcept { return _textureFile; }
 
         // Attributes
     protected:

@@ -12,7 +12,7 @@ namespace pse {
         // Constructor
     public:
         Text(const sf::String & str, const sf::Vector2f & pos = { 0, 0 }, const sf::Color & color = sf::Color::White,
-             unsigned int textSize = 18, std::string_view font = "resources/fonts/arial.ttf",
+             unsigned int textSize = 18, const std::string & font = "resources/fonts/arial.ttf",
              const sf::Text::Style & style = sf::Text::Regular) noexcept;
 
         // ViewItem functions
@@ -35,7 +35,7 @@ namespace pse {
 
         void setTextSize(unsigned int textSize) noexcept;
 
-        void setFont(std::string_view font) noexcept;
+        void setFont(const std::string & font) noexcept;
 
         void setStyle(const sf::Text::Style & style) noexcept;
 

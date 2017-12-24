@@ -2,7 +2,7 @@
 
 namespace pse {
     AnimatedSprite::AnimatedSprite(
-            std::string_view texture,
+            const std::string & texture,
             const sf::Vector2f & pos,
             const sf::Vector2f & size,
             size_t animations,
@@ -37,7 +37,7 @@ namespace pse {
         );
     }
 
-    void AnimatedSprite::setTexture(std::string_view texture) noexcept {
+    void AnimatedSprite::setTexture(const std::string & texture) noexcept {
         Sprite::setTexture(texture);
         updateTexture();
     }

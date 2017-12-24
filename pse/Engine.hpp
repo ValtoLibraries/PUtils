@@ -20,7 +20,7 @@ namespace pse {
         // Constructor
     public:
         Engine(size_t screenWidth, size_t screenHeight,
-               std::string_view screenName, int sfWindowStyle = sf::Style::Close,
+               const std::string & screenName, int sfWindowStyle = sf::Style::Close,
                double refreshRate = 120) noexcept;
 
         // Destructor

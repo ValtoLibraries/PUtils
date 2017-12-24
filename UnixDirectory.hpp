@@ -10,9 +10,9 @@
 namespace putils {
     class UnixDirectory final : public ADirectory {
     public:
-        UnixDirectory(std::string_view path)
+        UnixDirectory(const std::string & path)
                 :
-                _handle(opendir(path.data())),
+                _handle(opendir(path.c_str())),
                 _path(path),
                 _goOn(true) {
             if (!_handle)

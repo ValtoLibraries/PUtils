@@ -39,14 +39,11 @@ namespace kia {
         };
     }
 
-    inline packets::HttpResponse success(const packets::HttpRequest & origin, std::string_view statusCode = "200", std::string_view reasonPhrase = "") {
-        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, statusCode.data(), reasonPhrase.data(), {},
-                                      "" };
-    }
+    inline packets::HttpResponse success(const packets::HttpRequest & origin) {
+        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, "200", "", {}, "" };
+    };
 
-    inline packets::HttpResponse error(const packets::HttpRequest & origin, std::string_view statusCode = "400", std::string_view reasonPhrase = "") {
-        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, statusCode.data(), reasonPhrase.data(), {},
-                                      "" };
+    inline packets::HttpResponse error(const packets::HttpRequest & origin, std::string_view reasonPhrase = "") {
+        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, "400", reasonPhrase.data(), {}, "" };
     }
-
 }

@@ -4,7 +4,7 @@
 
 namespace pse {
     Text::Text(const sf::String & str, const sf::Vector2f & pos, const sf::Color & color, unsigned int textSize,
-               std::string_view font, const sf::Text::Style & style) noexcept
+               const std::string & font, const sf::Text::Style & style) noexcept
             :
             _fontFile(font) {
         setFont(font);
@@ -39,17 +39,17 @@ namespace pse {
         _text.setCharacterSize(_textSize);
     }
 
-    void Text::setFont(std::string_view font) noexcept {
-        if (fonts.find(font.data()) == fonts.end()) {
+    void Text::setFont(const std::string & font) noexcept {
+        if (fonts.find(font) == fonts.end()) {
             auto f = std::make_unique<sf::Font>();
-            if (!(f->loadFromFile(font.data()))) {
-                std::cerr << putils::concat("Error loading font '", font.data(), "'") << std::endl;
+            if (!(f->loadFromFile(font))) {
+                std::cerr << putils::concat("Error loading font '", font, "'") << std::endl;
                 return;
             }
-            fonts.emplace(font.data(), std::move(f));
+            fonts.emplace(font, std::move(f));
         }
 
-        _font = fonts[font.data()].get();
+        _font = fonts[font].get();
         _text.setFont(*_font);
     }
 

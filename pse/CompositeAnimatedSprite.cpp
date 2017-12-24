@@ -2,7 +2,7 @@
 #include "casts.hpp"
 
 pse::CompositeAnimatedSprite::CompositeAnimatedSprite(
-        std::string_view texture,
+        const std::string & texture,
         const sf::Vector2f & pos,
         const sf::Vector2f & size,
         size_t animations,

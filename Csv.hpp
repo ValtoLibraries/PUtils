@@ -12,16 +12,15 @@
 namespace putils {
     // Implementation details
     namespace {
-        template<typename T>
-        void extract(T & attr, std::string_view val) {
-            std::stringstream s(val.data());
-            s >> attr;
-        }
-
-        template<>
-        void extract(std::string & attr, std::string_view val) {
-            attr = val;
-        }
+        template<typename T, typename String>
+        void extract(T && attr, String && val) {
+            if constexpr (std::is_same<pmeta_typeof(attr), std::string>::value)
+                attr = val;
+            else {
+                std::stringstream s(FWD(val));
+                s >> attr;
+            }
+        };
     }
 
     namespace {
@@ -67,7 +66,7 @@ namespace putils {
 
         // Initialize from file
         Csv(std::string_view fileName, bool ignoreFirstLine = false) {
-            std::ifstream s(fileName.data());
+            std::ifstream s(std::string(fileName));
             fillRows(s, ignoreFirstLine);
         }
 
