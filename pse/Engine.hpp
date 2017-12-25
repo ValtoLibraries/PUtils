@@ -10,6 +10,7 @@
 #include <TGUI/Widget.hpp>
 #endif
 
+#include <unordered_map>
 #include "ViewItem.hpp"
 
 //
@@ -45,6 +46,24 @@ namespace pse {
                 it->second = height;
         }
 
+    public:
+        void addView(const std::string & name, const sf::Vector2f & center, const sf::Vector2f & size, size_t height) {
+            _views.emplace(name, std::make_pair(sf::View(center, size), height));
+        }
+
+        bool hasView(const std::string & name) const noexcept { return _views.find(name) != _views.end(); }
+
+        void removeView(const std::string & name) {
+            const auto it = _views.find(name);
+            if (it != _views.end())
+                _views.erase(it);
+        }
+
+        void setViewHeight(const std::string & name, size_t height) { _views[name].second = height; }
+
+        const sf::View & getView(const std::string & name) const { return _views.at(name).first; }
+        sf::View & getView(const std::string & name) noexcept { return _views[name].first; }
+
         // Update the engine
         // clear: whether or not the screen should be splashed black
     public:
@@ -69,7 +88,7 @@ namespace pse {
 
     private:
         void refreshMovingItems() noexcept;
-
+        void drawViews() noexcept;
         void drawItems() noexcept;
 
         // Approximation of whether two positions are the same
@@ -87,6 +106,7 @@ namespace pse {
     private:
         sf::RenderWindow _window;
         std::vector<std::pair<ViewItem *, size_t>> _items;
+        std::unordered_map<std::string, std::pair<sf::View, size_t>> _views;
         putils::Timer _refreshTimer;
 
 #ifdef PSE_TGUI

@@ -11,14 +11,19 @@ namespace pse {
 #ifdef PSE_TGUI
     , _tgui(_window)
 #endif
-    {}
+    {
+        addView("default",
+                { (float)screenWidth / 2, (float)screenHeight / 2 }, { (float)screenWidth, (float)screenHeight },
+                0);
+    }
 
     void Engine::update(bool clear) noexcept {
         if (clear)
             displayColor(sf::Color::Black);
 
         refreshMovingItems();
-        drawItems();
+        drawViews();
+
 #ifdef PSE_TGUI
         _tgui.draw();
 #endif
@@ -50,6 +55,27 @@ namespace pse {
                 item->setDelay(-1);
                 item->setDestination({ -1, -1 });
             }
+        }
+    }
+
+    void Engine::drawViews() noexcept {
+        size_t drawn = 0;
+        size_t height = 0;
+
+        while (drawn < _views.size()) {
+            for (const auto & p : _views) {
+                const auto & pair = p.second;
+
+                const auto h = pair.second;
+                if (h == height) {
+                    const auto & view = pair.first;
+                    _window.setView(view);
+                    drawItems();
+                    ++drawn;
+                }
+            }
+
+            ++height;
         }
     }
 
