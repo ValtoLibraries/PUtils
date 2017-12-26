@@ -2,8 +2,7 @@
 
 #include <tuple>
 
-namespace pmeta
-{
+namespace pmeta {
     //
     // Class which, for each type X in Tuple,
     // inherits from T<X>
@@ -22,7 +21,6 @@ namespace pmeta
     //
     template<template<class> class T, typename U, typename ...Types>
     class GenLinearHierarchy<T, U, Types...>
-            : public T<U>, public GenLinearHierarchy<T, Types...>
-    {
+            : public T<U>, public GenLinearHierarchy<T, Types...> {
     };
 }

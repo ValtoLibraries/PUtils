@@ -1,14 +1,13 @@
 #include "AnimatedSprite.hpp"
 
-namespace pse
-{
+namespace pse {
     AnimatedSprite::AnimatedSprite(
-            std::string_view texture,
-            const sf::Vector2f &pos,
-            const sf::Vector2f &size,
+            const std::string & texture,
+            const sf::Vector2f & pos,
+            const sf::Vector2f & size,
             size_t animations,
-            const std::vector<size_t> &tilesPerAnimation,
-            const sf::Vector2f &tileDimensions,
+            const std::vector<size_t> & tilesPerAnimation,
+            const sf::Vector2f & tileDimensions,
             double refreshDelay) noexcept
             :
             Sprite(texture, pos, size),
@@ -20,15 +19,13 @@ namespace pse
             _currentTile(0),
             _lastTile(tilesPerAnimation[0]),
             _tileDimensions(tileDimensions),
-            _refreshTimer(refreshDelay)
-    {
+            _refreshTimer(refreshDelay) {
         if (_tileDimensions == sf::Vector2f(0, 0))
             _tileDimensions = size;
         AnimatedSprite::setTexture(texture);
     }
 
-    std::unique_ptr<ViewItem> AnimatedSprite::copy() const noexcept
-    {
+    std::unique_ptr<ViewItem> AnimatedSprite::copy() const noexcept {
         return std::make_unique<AnimatedSprite>(
                 getTextureFile(),
                 getPosition(),
@@ -40,17 +37,14 @@ namespace pse
         );
     }
 
-    void AnimatedSprite::setTexture(std::string_view texture) noexcept
-    {
+    void AnimatedSprite::setTexture(const std::string & texture) noexcept {
         Sprite::setTexture(texture);
         updateTexture();
     }
 
-    void AnimatedSprite::advance() noexcept
-    {
+    void AnimatedSprite::advance() noexcept {
         ++_currentTile;
-        if (_currentTile >= _lastTile)
-        {
+        if (_currentTile >= _lastTile) {
             stopAnimation();
             return;
         }
@@ -58,27 +52,23 @@ namespace pse
         updateTexture();
     }
 
-    void AnimatedSprite::refresh() noexcept
-    {
+    void AnimatedSprite::refresh() noexcept {
         if (!_animated || _refreshTimer.getDuration().count() <= 0)
             return;
 
-        if (_refreshTimer.isDone())
-        {
+        if (_refreshTimer.isDone()) {
             _refreshTimer.restart();
             advance();
         }
     }
 
-    void AnimatedSprite::startAnimation(const std::chrono::duration<double> &time) noexcept
-    {
+    void AnimatedSprite::startAnimation(const std::chrono::duration<double> & time) noexcept {
         _animated = true;
         if (time != std::chrono::duration<double>(-1))
             _refreshTimer.setDuration(time / _tilesPerAnimation[_currentAnimation]);
     }
 
-    void AnimatedSprite::stopAnimation() noexcept
-    {
+    void AnimatedSprite::stopAnimation() noexcept {
         _animated = false;
         _currentTile = 0;
         updateTexture();

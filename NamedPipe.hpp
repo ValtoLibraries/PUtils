@@ -13,8 +13,7 @@ namespace putils
 
 #include "UnixNamedPipe.hpp"
 
-namespace putils
-{
+namespace putils {
     using NamedPipe = UnixNamedPipe;
 }
 

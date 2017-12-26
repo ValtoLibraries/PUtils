@@ -15,6 +15,9 @@ if (UNIX)
     target_link_libraries(http pthread)
 endif ()
 
-if(WIN32)
+if (WIN32)
     target_link_libraries(http wsock32 ws2_32)
-endif()
+endif ()
+
+include(cotire)
+cotire(http)

@@ -36,7 +36,7 @@ namespace putils
 
         // Load a symbol
     public:
-        void *loadSymbol(std::string_view name) noexcept override { return dlsym(_handle, name.data()); }
+        void *loadSymbol(const std::string & name) noexcept override { return dlsym(_handle, name.c_str()); }
 
         // Attributes
     private:

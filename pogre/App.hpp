@@ -20,8 +20,9 @@ namespace pogre
                 public detail::ActionManager, public detail::AnimationManager
     {
     public:
-        App(std::string_view name = "App")
-                : OgreBites::ApplicationContext(name.data())
+        template<typename String>
+        App(String && name = "App")
+                : OgreBites::ApplicationContext(FWD(name))
         {
             addInputListener(this);
         }

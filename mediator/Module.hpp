@@ -52,6 +52,8 @@ namespace putils
             template<typename Q>
             Handler(Mediator *m, Q &&query) : BaseModule(m)
             {
+                if constexpr (std::is_pointer<Response>::value)
+                    res = nullptr;
                 query.sender = this;
                 this->send(FWD(query));
             }

@@ -18,47 +18,44 @@ namespace putils
 {
 class WindowsLibrary final : public putils::Library
 {
-	// Constructor
+    // Constructor
 public:
-	WindowsLibrary(std::string_view name)
-	:
-	Library(name.data())// ,
-	// _handle(LoadLibrary(name.c_str()))
-{
+    template<typename String>
+    WindowsLibrary(String && name) : Library(FWD(name)) {
     std::string copy(name);
 
     std::replace(copy.begin(), copy.end(), '/', '\\');
     _handle = LoadLibrary(copy.c_str());
-	if (_handle == nullptr)
-	{
-	    std::stringstream s;
-		s << "Failed to load library '" << name << "': " << putils::GetLastErrorAsString();
-		std::cerr << "[" << copy << "]" << std::endl;
-		std::cerr << putils::getCurrentDir<>() << std::endl;
-		throw std::runtime_error(s.str());
-	}
+    if (_handle == nullptr)
+    {
+        std::stringstream s;
+        s << "Failed to load library '" << name << "': " << putils::GetLastErrorAsString();
+        std::cerr << "[" << copy << "]" << std::endl;
+        std::cerr << putils::getCurrentDir<>() << std::endl;
+        throw std::runtime_error(s.str());
+    }
 }
 
 
-	// Destructor
+    // Destructor
 public:
-	~WindowsLibrary() noexcept
-	{
-	    if (_handle != nullptr)
-		    FreeLibrary(_handle);
-	}
+    ~WindowsLibrary() noexcept
+    {
+        if (_handle != nullptr)
+            FreeLibrary(_handle);
+    }
 
-	// Load a symbol
+    // Load a symbol
 public:
-	void *loadSymbol(std::string_view name) noexcept override { return (void*)GetProcAddress(_handle, name.data()); }
+    void *loadSymbol(const std::string & name) noexcept override { return (void*)GetProcAddress(_handle, name.c_str()); }
 
-	// Attributes
+    // Attributes
 private:
-	HMODULE _handle;
+    HMODULE _handle;
 
 private:
-	WindowsLibrary(const WindowsLibrary &) = delete;
-	WindowsLibrary &operator=(const WindowsLibrary &) = delete;
+    WindowsLibrary(const WindowsLibrary &) = delete;
+    WindowsLibrary &operator=(const WindowsLibrary &) = delete;
 };
 }
 

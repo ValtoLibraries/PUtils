@@ -6,16 +6,14 @@
 #include "SFML/Graphics.hpp"
 #include "ViewItem.hpp"
 
-namespace pse
-{
+namespace pse {
     //
     // Sprite class for SFML
     //
-    class Sprite : public ViewItem
-    {
+    class Sprite : public ViewItem {
         // Constructor
     public:
-        Sprite(std::string_view texture, const sf::Vector2f &pos, const sf::Vector2f &size);
+        Sprite(const std::string & texture, const sf::Vector2f & pos, const sf::Vector2f & size);
 
         // Destructor
     public:
@@ -25,22 +23,21 @@ namespace pse
     public:
         std::unique_ptr<ViewItem> copy() const noexcept override;
 
-        void draw(sf::RenderWindow &window) noexcept override { window.draw(_sprite); }
+        void draw(sf::RenderWindow & window) noexcept override { window.draw(_sprite); }
 
-        sf::Vector2f getSize() const noexcept override
-        {
+        sf::Vector2f getSize() const noexcept override {
             return sf::Vector2f(_sprite.getLocalBounds().width, _sprite.getLocalBounds().height);
         }
 
-        const sf::Drawable &getDrawable() noexcept override { return _sprite; }
+        const sf::Drawable & getDrawable() noexcept override { return _sprite; }
 
-        sf::Transformable &getTransformable() noexcept override { return _sprite; }
+        sf::Transformable & getTransformable() noexcept override { return _sprite; }
 
         // Texture getters and setters
     public:
-        virtual void setTexture(std::string_view texture);
+        virtual void setTexture(const std::string & texture);
 
-        std::string_view getTextureFile() const noexcept { return _textureFile; }
+        const std::string & getTextureFile() const noexcept { return _textureFile; }
 
         // Attributes
     protected:
@@ -53,8 +50,8 @@ namespace pse
 
         // Coplien
     public:
-        Sprite(const Sprite &other) = delete;
+        Sprite(const Sprite & other) = delete;
 
-        Sprite operator=(const Sprite &other) = delete;
+        Sprite operator=(const Sprite & other) = delete;
     };
 }

@@ -3,10 +3,8 @@
 #include <unordered_map>
 #include <string>
 
-namespace Http
-{
-    struct Request
-    {
+namespace Http {
+    struct Request {
         std::string method;
         std::string uri;
         std::string httpVersion;
@@ -14,8 +12,7 @@ namespace Http
         std::string body;
     };
 
-    struct Response
-    {
+    struct Response {
         std::string httpVersion;
         std::string statusCode;
         std::string reasonPhrase;

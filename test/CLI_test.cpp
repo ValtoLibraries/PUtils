@@ -1,26 +1,23 @@
 #include "gtest/gtest.h"
 #include "CLI.hpp"
 
-struct CLITest : testing::Test
-{
-    putils::CLI cli{
+struct CLITest : testing::Test {
+    putils::CLI cli {
             // Commands
             {
                     {
                             "test",
-                            [](std::string_view, const std::vector<putils::CLI::Param> &params)
-                            {
+                            [](std::string_view, const std::vector<putils::CLI::Param> & params) {
                                 std::cout << "Test successful" << std::endl;
-                                for (const auto &p : params)
+                                for (const auto & p : params)
                                     std::cout << "\t[" << p.value << "]" << std::endl;
                             }
                     }
             },
             // Default
-            [](std::string_view cmd, const std::vector<putils::CLI::Param> &params)
-            {
+            [](std::string_view cmd, const std::vector<putils::CLI::Param> & params) {
                 std::cout << "[" << cmd << "]";
-                for (const auto &p : params)
+                for (const auto & p : params)
                     std::cout << " [" << p.value << "]";
                 std::cout << std::endl;
             },
@@ -29,8 +26,7 @@ struct CLITest : testing::Test
     };
 };
 
-TEST_F(CLITest, RegisteredCommand)
-{
+TEST_F(CLITest, RegisteredCommand) {
     testing::internal::CaptureStdout();
     cli.executeCommand("test one two three");
     const auto str = testing::internal::GetCapturedStdout();
@@ -42,20 +38,17 @@ TEST_F(CLITest, RegisteredCommand)
     );
 }
 
-TEST_F(CLITest, DefaultCommand)
-{
+TEST_F(CLITest, DefaultCommand) {
     testing::internal::CaptureStdout();
     cli.executeCommand("unknown one two three");
     const auto str = testing::internal::GetCapturedStdout();
     EXPECT_EQ(str, "[unknown] [one] [two] [three]\n");
 }
 
-TEST_F(CLITest, AddCommand)
-{
+TEST_F(CLITest, AddCommand) {
     testing::internal::CaptureStdout();
     cli.addCommand("new",
-                   [](std::string_view cmd, const std::vector<putils::CLI::Param> &)
-                   {
+                   [](std::string_view cmd, const std::vector<putils::CLI::Param> &) {
                        std::cout << "<" << cmd << ">" << std::endl;
                    }
     );
@@ -64,8 +57,7 @@ TEST_F(CLITest, AddCommand)
     EXPECT_EQ(str, "<new>\n");
 }
 
-TEST_F(CLITest, Delimiters)
-{
+TEST_F(CLITest, Delimiters) {
     testing::internal::CaptureStdout();
     cli.executeCommand("unknown \"one two three\"");
     const auto str = testing::internal::GetCapturedStdout();

@@ -4,32 +4,28 @@
 #include <type_traits>
 #include "fwd.hpp"
 
-namespace putils
-{
+namespace putils {
     template<typename T, bool = std::is_scalar<T>::value>
     class RAII;
 
-//
-// RAII template
-// Create one by giving it a resource and a function to release that resource
-// Can be used just like the resource by using the implicit conversion operators
-//
+    //
+    // RAII template
+    // Create one by giving it a resource and a function to release that resource
+    // Can be used just like the resource by using the implicit conversion operators
+    //
     template<typename T>
-    class RAII<T, false>
-    {
+    class RAII<T, false> {
     public:
-        RAII(T &&res, std::function<void(T &)> &&dtor = [](T &) {})
+        RAII(T && res, std::function<void(T &)> && dtor = [](T &) {})
                 : _res(std::forward<T>(res)), _dtor(std::move(dtor)) {}
 
     public:
-        RAII(RAII<T> &&other)
-                : _res(std::move(other._res)), _dtor(std::move(other._dtor))
-        {
+        RAII(RAII<T> && other)
+                : _res(std::move(other._res)), _dtor(std::move(other._dtor)) {
             other._release = false;
         }
 
-        RAII &operator=(RAII<T> &&other)
-        {
+        RAII & operator=(RAII<T> && other) {
             _res = std::move(other._res);
             _dtor = std::move(other._dtor);
             other._release = false;
@@ -39,19 +35,18 @@ namespace putils
     public:
         RAII(const RAII<T> &) = delete;
 
-        RAII<T> &operator=(const RAII<T> &) = delete;
+        RAII<T> & operator=(const RAII<T> &) = delete;
 
     public:
-        ~RAII()
-        {
+        ~RAII() {
             if (_release)
                 _dtor(_res);
         }
 
     public:
-        T &get() noexcept { return _res; }
+        T & get() noexcept { return _res; }
 
-        const T &get() const noexcept { return _res; }
+        const T & get() const noexcept { return _res; }
 
         operator T &() { return _res; }
 
@@ -59,30 +54,27 @@ namespace putils
 
     public:
         template<typename Val>
-        void operator=(Val &&val) { _res = FWD(val); }
+        void operator=(Val && val) { _res = FWD(val); }
 
     private:
         T _res;
-        bool _release{true};
+        bool _release { true };
         std::function<void(T &)> _dtor;
     };
 
     template<typename T>
-    class RAII<T, true>
-    {
+    class RAII<T, true> {
     public:
-        RAII(T res, std::function<void(T)> &&dtor = [](T) {})
+        RAII(T res, std::function<void(T)> && dtor = [](T) {})
                 : _res(res), _dtor(std::move(dtor)) {}
 
     public:
-        RAII(RAII<T> &&other)
-                : _res(other._res), _dtor(std::move(other._dtor))
-        {
+        RAII(RAII<T> && other)
+                : _res(other._res), _dtor(std::move(other._dtor)) {
             other._release = false;
         }
 
-        RAII &operator=(RAII<T> &&other)
-        {
+        RAII & operator=(RAII<T> && other) {
             _res = other._res;
             _dtor = std::move(other._dtor);
             other._release = false;
@@ -90,8 +82,7 @@ namespace putils
         }
 
     public:
-        ~RAII()
-        {
+        ~RAII() {
             if (_release)
                 _dtor(_res);
         }
@@ -99,12 +90,12 @@ namespace putils
     public:
         RAII(const RAII<T> &) = delete;
 
-        RAII<T> &operator=(const RAII<T> &) = delete;
+        RAII<T> & operator=(const RAII<T> &) = delete;
 
     public:
-        T &get() noexcept { return _res; }
+        T & get() noexcept { return _res; }
 
-        const T &get() const noexcept { return _res; }
+        const T & get() const noexcept { return _res; }
 
         operator T() { return _res; }
 
@@ -115,7 +106,7 @@ namespace putils
 
     private:
         T _res;
-        bool _release{true};
+        bool _release { true };
         std::function<void(T)> _dtor;
     };
 }

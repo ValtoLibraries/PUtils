@@ -3,12 +3,9 @@
 #include <random>
 #include <limits>
 
-namespace putils
-{
-    // Random int generator
-    template<typename T, T start = 0, T end = std::numeric_limits<T>::max>
-    inline T rand() noexcept
-    {
+namespace putils {
+    template<typename T>
+    inline T rand(T start = 0, T end = std::numeric_limits<T>::max) noexcept {
         if constexpr (std::is_floating_point<T>::value)
                 {
                         static std::random_device r;

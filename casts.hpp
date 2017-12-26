@@ -3,34 +3,30 @@
 #include <memory>
 #include "runTests.hpp"
 
-namespace putils
-{
+namespace putils {
     template<typename Derived, typename Base>
-    std::unique_ptr<Derived> static_unique_ptr_cast(std::unique_ptr<Base> &&p);
+    std::unique_ptr<Derived> static_unique_ptr_cast(std::unique_ptr<Base> && p);
 
     template<typename Derived, typename Base>
-    std::unique_ptr<Derived> dynamic_unique_ptr_cast(std::unique_ptr<Base> &&p);
+    std::unique_ptr<Derived> dynamic_unique_ptr_cast(std::unique_ptr<Base> && p);
 
     /*
      * Implementation details
      */
 
     template<typename Derived, typename Base>
-    std::unique_ptr<Derived> static_unique_ptr_cast(std::unique_ptr<Base> &&p)
-    {
+    std::unique_ptr<Derived> static_unique_ptr_cast(std::unique_ptr<Base> && p) {
         auto d = static_cast<Derived *>(p.release());
-        return std::unique_ptr<Derived>(d);
+        return std::unique_ptr < Derived > (d);
     }
 
     template<typename Derived, typename Base>
-    std::unique_ptr<Derived> dynamic_unique_ptr_cast(std::unique_ptr<Base> &&p)
-    {
+    std::unique_ptr<Derived> dynamic_unique_ptr_cast(std::unique_ptr<Base> && p) {
         auto result = dynamic_cast<Derived *>(p.get());
-        if (result != nullptr)
-        {
+        if (result != nullptr) {
             p.release();
-            return std::unique_ptr<Derived>(result);
+            return std::unique_ptr < Derived > (result);
         }
-        return std::unique_ptr<Derived>(nullptr);
+        return std::unique_ptr < Derived > (nullptr);
     }
 }

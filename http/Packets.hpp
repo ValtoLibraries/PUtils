@@ -3,17 +3,13 @@
 #include <string>
 #include <unordered_map>
 
-namespace kia
-{
-    namespace packets
-    {
-        struct Log
-        {
+namespace kia {
+    namespace packets {
+        struct Log {
             std::string msg;
         };
 
-        struct HttpRequest
-        {
+        struct HttpRequest {
             int clientFd;
             std::string method;
             std::string uri;
@@ -23,8 +19,7 @@ namespace kia
             std::string body;
         };
 
-        struct HttpResponse
-        {
+        struct HttpResponse {
             int clientFd;
             std::string httpVersion;
             std::string statusCode;
@@ -33,27 +28,22 @@ namespace kia
             std::string body;
         };
 
-        struct IncomingMessage
-        {
+        struct IncomingMessage {
             int clientFd;
             std::string msg;
         };
 
-        struct OutgoingMessage
-        {
+        struct OutgoingMessage {
             int clientFd;
             std::string msg;
         };
     }
 
-    inline packets::HttpResponse success(const packets::HttpRequest &origin, std::string_view statusCode = "200", std::string_view reasonPhrase = "")
-    {
-        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, statusCode.data(), reasonPhrase.data(), {}, ""};
-    }
+    inline packets::HttpResponse success(const packets::HttpRequest & origin) {
+        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, "200", "", {}, "" };
+    };
 
-    inline packets::HttpResponse error(const packets::HttpRequest &origin, std::string_view statusCode = "400", std::string_view reasonPhrase = "")
-    {
-        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, statusCode.data(), reasonPhrase.data(), {}, ""};
+    inline packets::HttpResponse error(const packets::HttpRequest & origin, std::string_view reasonPhrase = "") {
+        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, "400", reasonPhrase.data(), {}, "" };
     }
-
 }

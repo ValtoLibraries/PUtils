@@ -2,15 +2,13 @@
 
 #include <sstream>
 
-namespace putils
-{
+namespace putils {
     template<typename Stream>
-    std::string read_stream(Stream &&istream)
-    {
+    std::string read_stream(Stream && istream) {
         std::ostringstream ret;
 
         while (istream && istream.peek() >= 0)
-            ret << (char)istream.get();
+            ret << (char) istream.get();
 
         return ret.str();
     }

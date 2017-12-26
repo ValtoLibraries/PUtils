@@ -5,13 +5,11 @@
 #define pmeta_typeof(object) std::decay_t<decltype(object)>
 #define pmeta_wrapped(typeObject) typename pmeta_typeof(typeObject)::wrapped
 
-namespace pmeta
-{
+namespace pmeta {
     using type_index = std::size_t;
 
     template<typename T>
-    struct type
-    {
+    struct type {
         using wrapped = T;
         static const type_index index;
     };

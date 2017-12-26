@@ -9,17 +9,13 @@
 #include "chop.hpp"
 #include "concat.hpp"
 
-namespace putils
-{
-    namespace json
-    {
+namespace putils {
+    namespace json {
         template<typename String>
-        std::string prettyPrint(String &&str);
+        std::string prettyPrint(String && str);
 
-        struct Object
-        {
-            enum class Type
-            {
+        struct Object {
+            enum class Type {
                 Value,
                 Object,
                 Array
@@ -32,20 +28,19 @@ namespace putils
             // if fields.size() == 0, then I'm a simple value
 
             // Array
-            Object &operator[](std::size_t i) { return items[i]; }
-            const Object &operator[](std::size_t i) const { return items[i]; }
+            Object & operator[](std::size_t i) { return items[i]; }
+            const Object & operator[](std::size_t i) const { return items[i]; }
 
             // Object
-            const Object &operator[](std::string_view name) const { return fields.at(name.data()); }
-            Object &operator[](std::string_view name) { return fields[name.data()]; }
+            const Object & operator[](const std::string & name) const { return fields.at(name); }
+            Object & operator[](const std::string & name) { return fields[name]; }
 
             // Value
             operator const std::string &() const { return value; }
-            const std::string &toString() const { return value; }
+            const std::string & toString() const { return value; }
             int toInt() const { return std::stoi(value); }
             double toDouble() const { return std::stod(value); }
-            bool toBool() const
-            {
+            bool toBool() const {
                 std::stringstream s;
                 s << std::boolalpha << value;
                 bool ret;
@@ -53,27 +48,22 @@ namespace putils
                 return ret;
             }
 
-            friend std::ostream &operator<<(std::ostream &s, const Object &obj)
-            {
+            friend std::ostream & operator<<(std::ostream & s, const Object & obj) {
                 s << obj.value;
                 return s;
             }
         };
 
         template<typename String>
-        Object lex(String &&str);
+        Object lex(String && str);
     }
 }
 
-namespace putils
-{
-    namespace json
-    {
-        namespace detail
-        {
+namespace putils {
+    namespace json {
+        namespace detail {
             template<typename Ret>
-            void printLineAndSkipSpace(std::istringstream &s, Ret &ret, std::size_t indent)
-            {
+            void printLineAndSkipSpace(std::istringstream & s, Ret & ret, std::size_t indent) {
                 ret.append(1, '\n');
                 ret.append(indent, '\t');
                 while (s && std::isspace(s.peek()))
@@ -82,8 +72,7 @@ namespace putils
         }
 
         template<typename String>
-        std::string prettyPrint(String &&str)
-        {
+        std::string prettyPrint(String && str) {
             static std::string startBlock = "{[";
             static std::string endBlock = "}]";
             static std::string newLine = ",";
@@ -94,28 +83,24 @@ namespace putils
             std::string ret;
             std::size_t indent = 0;
 
-            while (s)
-            {
+            while (s) {
                 const char c = s.get();
                 if (c == -1)
                     break;
 
-                if (c == '\\')
-                {
+                if (c == '\\') {
                     ret.append(1, s.get());
                     continue;
                 }
 
-                if (endBlock.find(c) != std::string::npos)
-                {
+                if (endBlock.find(c) != std::string::npos) {
                     --indent;
                     detail::printLineAndSkipSpace(s, ret, indent);
                 }
 
                 if (c != '\n')
                     ret.append(1, c);
-                if (needSpace.find(c) != std::string::npos)
-                {
+                if (needSpace.find(c) != std::string::npos) {
                     ret.append(1, ' ');
                     while (s && std::isspace(s.peek()))
                         s.get();
@@ -124,8 +109,7 @@ namespace putils
                 if (newLine.find(c) != std::string::npos)
                     detail::printLineAndSkipSpace(s, ret, indent);
 
-                if (startBlock.find(c) != std::string::npos)
-                {
+                if (startBlock.find(c) != std::string::npos) {
                     ++indent;
                     detail::printLineAndSkipSpace(s, ret, indent);
                 }
@@ -134,14 +118,12 @@ namespace putils
             return ret;
         }
 
-        namespace
-        {
-            std::string lexValue(std::istringstream &s);
-            Object lexArray(std::istringstream &s);
-            Object lexObject(std::istringstream &s);
+        namespace {
+            std::string lexValue(std::istringstream & s);
+            Object lexArray(std::istringstream & s);
+            Object lexObject(std::istringstream & s);
 
-            void readKeyValue(std::istringstream &s, Object &ret)
-            {
+            void readKeyValue(std::istringstream & s, Object & ret) {
                 while (std::isspace(s.peek()))
                     s.get();
 
@@ -166,15 +148,12 @@ namespace putils
                 ret.value += ret[key].value;
             }
 
-            std::string lexValue(std::istringstream &s)
-            {
+            std::string lexValue(std::istringstream & s) {
                 std::string ret;
 
-                if (s.peek() == '"')
-                {
+                if (s.peek() == '"') {
                     s.get();
-                    while (s.peek() != '"')
-                    {
+                    while (s.peek() != '"') {
                         if (s.peek() == '\\')
                             s.get();
                         ret.append(1, s.get());
@@ -183,14 +162,12 @@ namespace putils
                     return ret;
                 }
 
-                while (s)
-                {
+                while (s) {
                     const char c = s.peek();
                     if (c == -1)
                         throw std::runtime_error("Unexpected EOF");
 
-                    if (c == '\\')
-                    {
+                    if (c == '\\') {
                         s.get();
                         ret.append(1, s.get());
                         continue;
@@ -203,21 +180,19 @@ namespace putils
 
                 ret = putils::chop(ret);
                 if ((ret.front() == '\"' && ret.back() == '\"') ||
-                        (ret.front() == '\'' && ret.back() == '\''))
+                    (ret.front() == '\'' && ret.back() == '\''))
                     ret = ret.substr(1, ret.size() - 2);
 
                 return ret;
             }
 
-            Object lexObject(std::istringstream &s)
-            {
+            Object lexObject(std::istringstream & s) {
                 Object ret;
 
                 while (std::isspace(s.peek()))
                     s.get();
 
-                if (s.peek() != '{')
-                {
+                if (s.peek() != '{') {
                     ret.type = Object::Type::Value;
                     // ret.value.append(1, s.get());
                     ret.value = lexValue(s);
@@ -226,8 +201,7 @@ namespace putils
 
                 ret.type = Object::Type::Object;
                 ret.value.append(1, s.get()); // Skip '{'
-                while (s)
-                {
+                while (s) {
                     while (std::isspace(s.peek()))
                         s.get();
 
@@ -235,8 +209,7 @@ namespace putils
                     if (c == -1 || !s)
                         throw std::runtime_error("Unexpected EOF");
 
-                    if (c == '}')
-                    {
+                    if (c == '}') {
                         ret.value.append(1, s.get());
                         break;
                     }
@@ -253,23 +226,20 @@ namespace putils
                 return ret;
             }
 
-            Object lexArray(std::istringstream &s)
-            {
+            Object lexArray(std::istringstream & s) {
                 Object ret;
                 ret.type = Object::Type::Array;
 
                 ret.value.append(1, s.get()); // Skip '['
 
-                while (s)
-                {
+                while (s) {
                     while (std::isspace(s.peek()))
                         s.get();
 
                     const char c = s.peek();
                     if (c == -1)
                         throw std::runtime_error("Unexpected EOF");
-                    if (c == ']')
-                    {
+                    if (c == ']') {
                         ret.value.append(1, s.get());
                         break;
                     }
@@ -295,8 +265,7 @@ namespace putils
         }
 
         template<typename Str>
-        Object lex(Str &&str)
-        {
+        Object lex(Str && str) {
             std::istringstream s(FWD(str));
 
             while (std::isspace(s.peek()))

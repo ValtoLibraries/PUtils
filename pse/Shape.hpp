@@ -3,15 +3,13 @@
 #include "ViewItem.hpp"
 #include "fwd.hpp"
 
-namespace pse
-{
+namespace pse {
     template<typename sfShape>
-    class Shape : public ViewItem
-    {
+    class Shape : public ViewItem {
         // Constructor
     public:
         template<typename ...Args>
-        Shape(Args &&...args) noexcept
+        Shape(Args && ...args) noexcept
                 : _shape(FWD(args)...) {}
 
         // Destructor
@@ -20,9 +18,9 @@ namespace pse
 
         // Access to raw SFML resource
     public:
-        sfShape &get() noexcept { return _shape; }
+        sfShape & get() noexcept { return _shape; }
 
-        const sfShape &get() const noexcept { return _shape; }
+        const sfShape & get() const noexcept { return _shape; }
 
         // ViewItem copy
     public:
@@ -30,17 +28,16 @@ namespace pse
 
         // ViewItem getters
     public:
-        sf::Vector2f getSize() const noexcept override
-        {
+        sf::Vector2f getSize() const noexcept override {
             auto rect = _shape.getLocalBounds();
             return sf::Vector2f(rect.width, rect.height);
         }
 
-        void draw(sf::RenderWindow &window) noexcept override { window.draw(_shape); }
+        void draw(sf::RenderWindow & window) noexcept override { window.draw(_shape); }
 
-        const sf::Drawable &getDrawable() noexcept override { return _shape; }
+        const sf::Drawable & getDrawable() noexcept override { return _shape; }
 
-        sf::Transformable &getTransformable() noexcept override { return _shape; }
+        sf::Transformable & getTransformable() noexcept override { return _shape; }
 
         // Attributes
     private:
@@ -50,6 +47,6 @@ namespace pse
     public:
         Shape(const Shape &) = delete;
 
-        Shape &operator=(const Shape &) = delete;
+        Shape & operator=(const Shape &) = delete;
     };
 }

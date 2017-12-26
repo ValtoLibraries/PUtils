@@ -2,22 +2,20 @@
 
 #include "AnimatedSprite.hpp"
 
-namespace pse
-{
+namespace pse {
     //
     // Composite for animated sprite, lets users combine several sprites into one
     //
-    class CompositeAnimatedSprite : public AnimatedSprite
-    {
+    class CompositeAnimatedSprite : public AnimatedSprite {
         // Constructor
     public:
         CompositeAnimatedSprite(
-                std::string_view texture,
-                const sf::Vector2f &pos,
-                const sf::Vector2f &size,
+                const std::string & texture,
+                const sf::Vector2f & pos,
+                const sf::Vector2f & size,
                 size_t animations,
-                const std::vector<size_t> &tilesPerAnimation,
-                const sf::Vector2f &tileDimensions,
+                const std::vector<size_t> & tilesPerAnimation,
+                const sf::Vector2f & tileDimensions,
                 double refreshDelay
         ) noexcept;
 
@@ -29,11 +27,11 @@ namespace pse
     public:
         std::unique_ptr<ViewItem> copy() const noexcept override;
 
-        void draw(sf::RenderWindow &window) noexcept override;
+        void draw(sf::RenderWindow & window) noexcept override;
 
-        void setPosition(const sf::Vector2f &pos) noexcept override;
+        void setPosition(const sf::Vector2f & pos) noexcept override;
 
-        void setSize(const sf::Vector2f &size) noexcept override;
+        void setSize(const sf::Vector2f & size) noexcept override;
 
         void setX(double x) noexcept override;
 
@@ -55,15 +53,13 @@ namespace pse
 
         // Add a new child to be drawn ABOVE previous children
     public:
-        void addChild(std::unique_ptr<AnimatedSprite> &&child) noexcept
-        {
+        void addChild(std::unique_ptr<AnimatedSprite> && child) noexcept {
             _children.push_back(std::move(child));
         }
 
         // Children getter
     public:
-        const std::vector<std::unique_ptr<AnimatedSprite>> &getChildren() const noexcept
-        {
+        const std::vector<std::unique_ptr<AnimatedSprite>> & getChildren() const noexcept {
             return _children;
         }
 
@@ -75,6 +71,6 @@ namespace pse
     public:
         CompositeAnimatedSprite(const CompositeAnimatedSprite &) = delete;
 
-        CompositeAnimatedSprite &operator=(const CompositeAnimatedSprite &) = delete;
+        CompositeAnimatedSprite & operator=(const CompositeAnimatedSprite &) = delete;
     };
 }

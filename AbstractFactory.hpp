@@ -6,12 +6,10 @@
 #include "meta/GenLinearHierarchy.hpp"
 #include "runTests.hpp"
 
-namespace putils
-{
+namespace putils {
     // Abstract Factory inherits from this for each type in TList
     template<typename T>
-    class AbstractFactoryUnit
-    {
+    class AbstractFactoryUnit {
         // Create a T
     public:
         virtual std::unique_ptr<T> makeImpl(pmeta::type<T>) noexcept = 0;
@@ -25,15 +23,12 @@ namespace putils
     // To build an object of type T, use factory.make<T>()
     //
     template<typename ...Types>
-    class AbstractFactory :
-            public pmeta::GenLinearHierarchy<AbstractFactoryUnit, Types...>
-    {
+    class AbstractFactory : public pmeta::GenLinearHierarchy<AbstractFactoryUnit, Types...> {
         // Make an object of type T by casting myself to the right AbstractFactoryUnit
     public:
         template<typename T>
-        std::unique_ptr<T> make() noexcept
-        {
-            AbstractFactoryUnit<T> &unit = static_cast<AbstractFactoryUnit<T> &>(*this);
+        std::unique_ptr<T> make() noexcept {
+            AbstractFactoryUnit<T> & unit = static_cast<AbstractFactoryUnit<T> &>(*this);
             return unit.makeImpl(pmeta::type<T>());
         }
     };

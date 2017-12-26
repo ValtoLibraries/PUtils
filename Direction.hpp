@@ -2,12 +2,10 @@
 
 #include "Point.hpp"
 
-namespace putils
-{
+namespace putils {
     using Direction = Point<int>;
 
-    namespace Directions
-    {
+    namespace Directions {
         static const Point<int> Up = { 0, 1 };
         static const Point<int> Down = { 0, -1 };
         static const Point<int> Left = { -1, 0 };

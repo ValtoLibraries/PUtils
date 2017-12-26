@@ -7,15 +7,11 @@
 #include "concat.hpp"
 #include "read_stream.hpp"
 
-namespace putils
-{
-    class Process
-    {
+namespace putils {
+    class Process {
     public:
-        struct Options
-        {
-            struct Stream
-            {
+        struct Options {
+            struct Stream {
                 bool redirected;
                 std::string replacement;
             };
@@ -27,28 +23,26 @@ namespace putils
 
     public:
         Process(std::string_view command,
-                const Options &options = Options{ { false, "" }, { false, "" }, { false, "" }})
-                : _options(options)
-        {
+                const Options & options = Options{ { false, "" },
+                                                   { false, "" },
+                                                   { false, "" } })
+                : _options(options) {
             std::string run(command);
             std::vector<std::function<void()>> toOpen;
 
-            for (const auto &p : redirects)
-            {
+            for (const auto & p : redirects) {
                 const auto stream = p.first;
-                const auto &redirect = p.second.first;
+                const auto & redirect = p.second.first;
                 const auto pipe = p.second.second;
 
-                const auto &s = options.*stream;
-                if (s.redirected)
-                {
-                    const auto &replacement = s.replacement;
+                const auto & s = options.*stream;
+                if (s.redirected) {
+                    const auto & replacement = s.replacement;
 
                     // Delay opening to let fifos be opened by system call first
-                    toOpen.push_back([this, pipe, replacement]
-                    {
+                    toOpen.push_back([this, pipe, replacement] {
                         (this->*pipe).open(replacement.c_str(),
-                                pipe == &Process::_stdin ? std::ifstream::out : std::ifstream::in
+                                           pipe == &Process::_stdin ? std::ifstream::out : std::ifstream::in
                         );
                     });
                     system(putils::concat("mkfifo ", replacement).c_str());
@@ -56,28 +50,26 @@ namespace putils
                 }
             }
 
-            std::thread([run]
-            {
+            std::thread([run] {
                 system(run.c_str());
             }).detach();
 
-            for (const auto &f : toOpen)
+            for (const auto & f : toOpen)
                 f();
         }
 
         ~Process() = default;
 
-        std::ostream &getStdin() { return getPipe(&Options::stdin, "stdin", _stdin); }
-        std::istream &getStdout() { return getPipe(&Options::stdout, "stdout", _stdout); }
-        std::istream &getStderr() { return getPipe(&Options::stderr, "stderr", _stderr); }
+        std::ostream & getStdin() { return getPipe(&Options::stdin, "stdin", _stdin); }
+        std::istream & getStdout() { return getPipe(&Options::stdout, "stdout", _stdout); }
+        std::istream & getStderr() { return getPipe(&Options::stderr, "stderr", _stderr); }
 
         void sendEOF() { _stdin.close(); }
 
     private:
         template<typename Str>
-        NamedPipe &getPipe(Options::Stream Options::*stream, Str &&name, NamedPipe &pipe)
-        {
-            const auto &s = _options.*stream;
+        NamedPipe & getPipe(Options::Stream Options::*stream, Str && name, NamedPipe & pipe) {
+            const auto & s = _options.*stream;
             if (!s.redirected)
                 throw std::logic_error(putils::concat(name, " was not redirected"));
 
@@ -96,19 +88,16 @@ namespace putils
     private:
         std::vector<std::pair<Options::Stream Options::*, std::pair<std::string, NamedPipe Process::*>>> redirects =
                 {
-                        { &Options::stdin, { " < ", &Process::_stdin } },
-                        { &Options::stdout,{ " 1> ", &Process::_stdout } },
-                        { &Options::stderr,{ " 2> ", &Process::_stderr } }
+                        { &Options::stdin,  { " < ",  &Process::_stdin } },
+                        { &Options::stdout, { " 1> ", &Process::_stdout } },
+                        { &Options::stderr, { " 2> ", &Process::_stderr } }
                 };
     };
 
-    namespace test
-    {
-        namespace
-        {
+    namespace test {
+        namespace {
             template<typename Str>
-            void test(Str &&command)
-            {
+            void test(Str && command) {
                 putils::Process::Options options;
                 options.stdout.redirected = true;
                 options.stderr.redirected = true;
@@ -119,8 +108,7 @@ namespace putils
 
                 std::string line;
                 std::cout << "Reading stdout:" << std::endl;
-                while (std::getline(p.getStdout(), line))
-                {
+                while (std::getline(p.getStdout(), line)) {
                     std::cout << "\t[" << line << "]" << std::endl;
                     p.getStdout().sync();
                 }
@@ -131,8 +119,7 @@ namespace putils
             }
         }
 
-        inline void process()
-        {
+        inline void process() {
             putils::Process::Options options;
             options.stdout.redirected = true;
             options.stderr.redirected = true;

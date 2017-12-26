@@ -7,8 +7,7 @@
 #include <string>
 #include <algorithm>
 
-namespace putils
-{
+namespace putils {
     //
     // Subject for Observer pattern.
     // No need for an Observer class, observers are simply functions with no return.
@@ -19,8 +18,7 @@ namespace putils
     //
 
     template<typename ...Args>
-    class Observable
-    {
+    class Observable {
         // Constructor
     public:
         Observable() noexcept = default;
@@ -30,13 +28,13 @@ namespace putils
     public:
         Observable(const Observable &) noexcept {}
 
-        Observable &operator=(const Observable &) noexcept { return *this; }
+        Observable & operator=(const Observable &) noexcept { return *this; }
 
         // Move
     public:
         Observable(Observable &&) noexcept = default;
 
-        Observable &operator=(Observable &&) noexcept = default;
+        Observable & operator=(Observable &&) noexcept = default;
 
         // Destructor
     public:
@@ -44,41 +42,33 @@ namespace putils
 
         // Add an observer, a simple function returning void
     public:
-        intptr_t addObserver(const std::function<void(const Args &...)> &observer) noexcept
-        {
-            auto id = (intptr_t)&observer;
+        intptr_t addObserver(const std::function<void(const Args & ...)> & observer) noexcept {
+            auto id = (intptr_t) &observer;
             _observers.push_back({ id, observer });
             return id;
         }
-        Observable &operator+=(const std::function<void()> &observer) noexcept { addObserver(observer); return *this; }
+        Observable & operator+=(const std::function<void()> & observer) noexcept {
+            addObserver(observer);
+            return *this;
+        }
 
     public:
-        void removeObserver(intptr_t id) noexcept
-        {
+        void removeObserver(intptr_t id) noexcept {
             _observers.erase(std::find_if(_observers.begin(), _observers.end(),
-                    [id](const auto &p) { return p.first == id; })
+                                          [id](const auto & p) { return p.first == id; })
             );
         }
 
         // Notify observers that the observable has changed
     public:
-        void changed(const Args &...args) noexcept
-        {
-            for (auto it = _observers.cbegin(); it != _observers.cend(); ++it)
-            {
-                try { it->second(args...); }
-                catch (std::bad_function_call &)
-                {
-                    auto tmp = it;
-                    ++it;
-                    _observers.erase(tmp);
-                }
-            }
+        void changed(const Args & ...args) noexcept {
+            for (const auto & [_, func] : _observers)
+                func(args...);
         }
-        void operator()(const Args &...args) noexcept { changed(args...); }
+        void operator()(const Args & ...args) noexcept { changed(args...); }
 
         // Attributes
     private:
-        std::vector<std::pair<intptr_t, std::function<void(const Args &...)>> > _observers;
+        std::vector<std::pair<intptr_t, std::function<void(const Args & ...)>>> _observers;
     };
 }

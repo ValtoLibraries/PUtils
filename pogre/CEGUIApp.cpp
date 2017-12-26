@@ -9,7 +9,7 @@
 
 namespace pogre
 {
-    CEGUIApp::CEGUIApp(std::string_view name) : App(name)
+    CEGUIApp::CEGUIApp(const std::string & name) : App(name)
     {
         addAction([this] { init(); });
     }
