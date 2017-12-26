@@ -18,3 +18,6 @@ endif ()
 if (WIN32)
     target_link_libraries(http wsock32 ws2_32)
 endif ()
+
+include(cotire)
+cotire(http)

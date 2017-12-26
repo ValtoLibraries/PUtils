@@ -1,3 +1,5 @@
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/CMakeModules)
+
 add_subdirectory(mediator)
 add_subdirectory(connection)
 add_subdirectory(pluginManager)
@@ -25,7 +27,6 @@ if (PUTILS_TEST)
     add_executable(${test_name} ${testSrc})
     target_link_libraries(${test_name} putils mediator connection pluginManager gtest_main)
 
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/CMakeModules)
     if (CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)
         append_coverage_compiler_flags()
@@ -34,3 +35,5 @@ if (PUTILS_TEST)
                 coverage)
     endif ()
 endif ()
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} PARENT_SCOPE)

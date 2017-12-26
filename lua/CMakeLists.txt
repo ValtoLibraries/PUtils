@@ -7,3 +7,5 @@ if (LUA_FOUND)
     target_link_libraries(lua INTERFACE ${LUA_LIBRARIES})
     target_include_directories(lua INTERFACE ${LUA_INCLUDE_DIR} .)
 endif ()
+
+cotire(lua)
