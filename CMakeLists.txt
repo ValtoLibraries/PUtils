@@ -30,9 +30,12 @@ if (PUTILS_TEST)
     if (CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)
         append_coverage_compiler_flags()
-        setup_target_for_coverage(NAME ${test_name}_coverage
-                EXECUTABLE ${test_name}
-                coverage)
+        find_program(lcov_found NAMES lcov)
+        if (lcov_found)
+            setup_target_for_coverage(NAME ${test_name}_coverage
+                    EXECUTABLE ${test_name}
+                    coverage)
+        endif()
     endif ()
 endif ()
 
