@@ -9,7 +9,8 @@ namespace pse {
             :
             _textureFile(texture),
             _size(size) {
-        Sprite::setTexture(texture);
+        if (!texture.empty())
+            Sprite::setTexture(texture);
         setPosition(pos);
         setSize(_size);
     }
