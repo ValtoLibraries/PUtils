@@ -1,4 +1,10 @@
+#include <cmath>
 #include "ViewItem.hpp"
+#include <iostream>
+
+std::ostream & operator<<(std::ostream & s, const sf::Vector2f & v) {
+    return s << v.x << " - " << v.y;
+}
 
 namespace pse {
     ViewItem::ViewItem() noexcept
@@ -7,24 +13,33 @@ namespace pse {
             _destination(-1, -1),
             _moveTimer(-1) {}
 
+    void ViewItem::draw(sf::RenderWindow & window) noexcept {
+        if (_drawable == nullptr)
+            _drawable = &getDrawable();
+        window.draw(*_drawable);
+    }
+
     void ViewItem::setPosition(const sf::Vector2f & pos) noexcept {
+        if (_transformable == nullptr)
+            _transformable = &getTransformable();
         _pos = pos;
-        getTransformable().setPosition(pos);
+        _transformable->setPosition(_pos.x + _size.x / 2, _pos.y + _size.y / 2);
+    }
+
+    void ViewItem::setRotation(double radians) noexcept {
+        if (_transformable == nullptr)
+            _transformable = &getTransformable();
+        _transformable->setRotation((float)(radians * 180 / M_PI));
     }
 
     void ViewItem::setSize(const sf::Vector2f & size) noexcept {
-        sf::Vector2f scale(size.x / getSize().x, size.y / getSize().y);
-        getTransformable().setScale(scale);
-    }
-
-    void ViewItem::setX(double x) noexcept {
-        _pos.x = (float) x;
-        getTransformable().setPosition(_pos);
-    }
-
-    void ViewItem::setY(double y) noexcept {
-        _pos.y = (float) y;
-        getTransformable().setPosition(_pos);
+        _size = size;
+        const auto current = getSize();
+        sf::Vector2f scale(size.x / current.x, size.y / current.y);
+        if (_transformable == nullptr)
+            _transformable = &getTransformable();
+        _transformable->setOrigin(current.x / 2, current.y / 2);
+        _transformable->setScale(scale);
     }
 
     void ViewItem::goTo(const sf::Vector2f & destination, double time) noexcept {

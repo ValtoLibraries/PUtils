@@ -19,8 +19,6 @@ namespace pse {
     public:
         std::unique_ptr<ViewItem> copy() const noexcept override;
 
-        void draw(sf::RenderWindow & window) noexcept override { window.draw(getDrawable()); }
-
         const sf::Drawable & getDrawable() noexcept override { return _text; }
 
         sf::Vector2f getSize() const noexcept override;

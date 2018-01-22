@@ -63,20 +63,6 @@ void pse::CompositeAnimatedSprite::setSize(const sf::Vector2f & size) noexcept {
         c->setSize(size);
 }
 
-void pse::CompositeAnimatedSprite::setX(double x) noexcept {
-    ViewItem::setX(x);
-
-    for (auto & c : _children)
-        c->setX(x);
-}
-
-void pse::CompositeAnimatedSprite::setY(double y) noexcept {
-    ViewItem::setY(y);
-
-    for (auto & c : _children)
-        c->setY(y);
-}
-
 void pse::CompositeAnimatedSprite::setAnimation(size_t animation) noexcept {
     for (auto & c : _children)
         c->setAnimation(animation);

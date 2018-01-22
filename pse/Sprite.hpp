@@ -15,18 +15,13 @@ namespace pse {
     public:
         Sprite(const std::string & texture, const sf::Vector2f & pos, const sf::Vector2f & size);
 
-        // Destructor
-    public:
-        virtual ~Sprite() noexcept {}
-
         // ViewItem functions
     public:
         std::unique_ptr<ViewItem> copy() const noexcept override;
 
-        void draw(sf::RenderWindow & window) noexcept override { window.draw(_sprite); }
-
         sf::Vector2f getSize() const noexcept override {
-            return sf::Vector2f(_sprite.getLocalBounds().width, _sprite.getLocalBounds().height);
+            const auto bounds = _sprite.getLocalBounds();
+            return sf::Vector2f(bounds.width, bounds.height);
         }
 
         const sf::Drawable & getDrawable() noexcept override { return _sprite; }

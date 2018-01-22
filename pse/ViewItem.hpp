@@ -41,7 +41,7 @@ namespace pse {
 
         // Rendering
     public:
-        virtual void draw(sf::RenderWindow & window) noexcept = 0;
+        virtual void draw(sf::RenderWindow & window) noexcept;
 
         virtual const sf::Drawable & getDrawable() noexcept = 0;
 
@@ -58,9 +58,7 @@ namespace pse {
 
         virtual void setPosition(const sf::Vector2f & pos) noexcept;
 
-        virtual void setX(double x) noexcept;
-
-        virtual void setY(double y) noexcept;
+        virtual void setRotation(double radians) noexcept;
 
         // Destination getters and setters
     public:
@@ -88,7 +86,10 @@ namespace pse {
 
         // Attributes
     private:
+        sf::Transformable * _transformable = nullptr;
+        const sf::Drawable * _drawable = nullptr;
         sf::Vector2f _pos;
+        sf::Vector2f _size;
         sf::Vector2f _destination;
         sf::Vector2f _previousPosition;
         putils::Timer _moveTimer;
