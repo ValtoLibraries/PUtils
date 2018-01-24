@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 namespace putils {
     // Template to give as a 3rd parameter to unordered_map when using an enum as key
     struct EnumHash {
