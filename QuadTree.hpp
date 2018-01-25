@@ -9,7 +9,7 @@
 #include "fwd.hpp"
 
 namespace putils {
-    template<typename Contained, typename Precision = int, std::size_t MaxChildren = 4>
+    template<typename Contained, typename Precision = int, std::size_t MaxChildren = 32>
     class QuadTree {
     public:
         struct Obj {
