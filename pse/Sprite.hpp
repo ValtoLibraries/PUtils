@@ -34,6 +34,16 @@ namespace pse {
 
         const std::string & getTextureFile() const noexcept { return _textureFile; }
 
+        void repeat(const sf::IntRect & rect) {
+            _sprite.setScale(1, 1);
+            _sprite.setTextureRect(rect);
+            textures[_textureFile].setRepeated(true);
+        }
+
+        void unrepeat() {
+            textures[_textureFile].setRepeated(false);
+        }
+
         // Attributes
     protected:
         sf::Sprite _sprite;
