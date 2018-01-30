@@ -1,10 +1,8 @@
 #include <cmath>
+#ifndef M_PI
+# define M_PI 3.14159265358979323846264338327950288
+#endif
 #include "ViewItem.hpp"
-#include <iostream>
-
-std::ostream & operator<<(std::ostream & s, const sf::Vector2f & v) {
-    return s << v.x << " - " << v.y;
-}
 
 namespace pse {
     ViewItem::ViewItem() noexcept
