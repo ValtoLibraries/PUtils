@@ -35,6 +35,10 @@ namespace putils {
 
         size_t last = currentPath.find_last_of("/\\");
         auto dest = currentPath.substr(0, last);
+#ifdef __unix__
         chdir(dest.c_str());
+#elif defined(_Win32)
+        _chdir(dest.c_str());
+#endif
     }
 }
