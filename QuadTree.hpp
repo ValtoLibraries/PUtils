@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdexcept>
-#include <iostream>
 #include <algorithm>
 #include <vector>
 #include <cstddef>
@@ -24,11 +23,11 @@ namespace putils {
     public:
         template<typename O>
         bool add(O && obj, const Rect <Precision> & boundingBox) {
-            if (!_boundingBox.intersect(boundingBox))
-                return false; // object isn't in this area
+            while (!_boundingBox.intersect(boundingBox))
+                enlarge(boundingBox);
 
             if (_items.size() < MaxChildren || _boundingBox.size.x < 2 || _boundingBox.size.y < 2) {
-                _items.push_back(Obj{ boundingBox, obj });
+                _items.push_back(Obj{ boundingBox, FWD(obj) });
                 return true;
             }
 
@@ -37,7 +36,7 @@ namespace putils {
 
             bool good = false;
             for (auto & c : _children)
-                good |= c.add(obj, boundingBox);
+                good |= c.add(FWD(obj), boundingBox);
 
             if (!good)
                 throw std::runtime_error("Couldn't add object. This should never happen.");
@@ -47,12 +46,10 @@ namespace putils {
 
     public:
         void remove(const Contained & obj) noexcept {
-            auto it = std::find_if(_items.begin(), _items.end(),
-                                   [&obj](const Obj & item) { return item.obj == obj; });
+            auto it = findObject(_items, obj);
             while (it != _items.end()) {
                 _items.erase(it);
-                it = std::find_if(_items.begin(), _items.end(),
-                                  [&obj](const Obj & item) { return item.obj == obj; });
+                it = findObject(_items, obj);
             }
 
             for (auto & c : _children)
@@ -86,6 +83,33 @@ namespace putils {
         }
 
     private:
+        void enlarge(const Rect<Precision> & boundingBox) noexcept {
+            std::vector<QuadTree> newChildren;
+            newChildren.push_back(*this);
+
+            _items.clear();
+            _children = newChildren;
+
+            if (boundingBox.topLeft.x < _boundingBox.topLeft.x)
+                _boundingBox.topLeft.x -= _boundingBox.size.x;
+            else
+                _boundingBox.size.x += _boundingBox.size.x;
+
+            if (boundingBox.topLeft.y < _boundingBox.topLeft.y)
+                _boundingBox.topLeft.y -= _boundingBox.size.y;
+            else
+                _boundingBox.size.y += _boundingBox.size.y;
+
+            const Point<Precision> childSize = { _boundingBox.size.x / 2, _boundingBox.size.y / 2 };
+            _children.push_back(QuadTree({ { _boundingBox.topLeft.x, _boundingBox.topLeft.y + childSize.y },
+                                           childSize }));
+            _children.push_back(QuadTree({ { _boundingBox.topLeft.x + childSize.x, _boundingBox.topLeft.y },
+                                           childSize }));
+            _children.push_back(QuadTree({ { _boundingBox.topLeft.x + childSize.x,
+                                             _boundingBox.topLeft.y + childSize.x }, childSize }));
+        }
+
+    private:
         void divideIntoChildren() noexcept {
             const Point<Precision> childSize = { _boundingBox.size.x / 2, _boundingBox.size.y / 2 };
             _children.push_back(QuadTree({ _boundingBox.topLeft, childSize }));
@@ -95,6 +119,12 @@ namespace putils {
                                            childSize }));
             _children.push_back(QuadTree({ { _boundingBox.topLeft.x + childSize.x,
                                              _boundingBox.topLeft.y + childSize.x }, childSize }));
+        }
+
+    private:
+        template<typename Container>
+        decltype(auto) findObject(Container && c, const Contained & obj) const {
+            return std::find_if(c.begin(), c.end(), [obj](auto && other) { return obj == other.obj; });
         }
 
     private:
