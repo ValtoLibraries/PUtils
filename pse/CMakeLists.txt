@@ -11,20 +11,20 @@ set(SFML_INCLUDE_DIR ${SFML_ROOT}/include)
 # SFML linking for SFML Engine
 #
 
-if (UNIX)
-    set(SFML_LIBRARIES sfml-graphics sfml-window sfml-system)
-endif (UNIX)
+# if (UNIX)
+set(SFML_LIBRARIES sfml-graphics sfml-window sfml-system)
+# endif (UNIX)
 
-if (WIN32)
-    set(SFML_LIBRARIES
-            debug sfml-graphics-d
-            debug sfml-window-d
-            debug sfml-system-d
-            optimized sfml-graphics
-            optimized sfml-window
-            optimized sfml-system
-            )
-endif (WIN32)
+# if (WIN32)
+#     set(SFML_LIBRARIES
+#             debug sfml-graphics-d
+#             debug sfml-window-d
+#             debug sfml-system-d
+#             optimized sfml-graphics
+#             optimized sfml-window
+#             optimized sfml-system
+#             )
+# endif (WIN32)
 
 if (TGUI)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPSE_TGUI" PARENT_SCOPE)
