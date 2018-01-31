@@ -34,8 +34,7 @@ namespace putils
 
     namespace LibraryFactory
     {
-        template<typename Str>
-        putils::Library *make(Str &&name)
+        inline putils::Library *make(const std::string & name)
         {
             static std::unordered_map<std::string, std::unique_ptr<Library>> _register;
 
@@ -48,7 +47,10 @@ namespace putils
 #elif defined(_WIN32)
             static std::regex		end(R"(^.*\.dll$)");
 
-            auto lib = std::make_unique<WindowsLibrary>(std::regex_match(name, end) ? name : name + ".dll");
+            std::cout << "About to load " << name << std::endl;
+            const auto toLoad = std::regex_match(name, end) ? name : name + ".dll";
+            std::cout << "Which is in fact: " << toLoad << std::endl;
+            auto lib = std::make_unique<WindowsLibrary>(toLoad);
             _register.emplace(name, std::move(lib));
 #elif defined(__unix__)
             auto lib = std::make_unique<UnixLibrary>(addLibToPath(name, ".so"));
