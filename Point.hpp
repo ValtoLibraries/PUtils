@@ -68,7 +68,7 @@ namespace putils {
                 pmeta_reflectible_attribute(&Point::y)
         );
         pmeta_get_methods(
-                pmeta_nameof(distanceTo), &Point::distanceTo<Precision>,
+                std::string_view(pmeta_nameof(distanceTo)), &Point::distanceTo<Precision>,
                 pmeta_reflectible_attribute(&Point::angleTo)
         );
         pmeta_get_parents();
@@ -197,7 +197,7 @@ namespace putils {
                 pmeta_reflectible_attribute(&Point::z)
         );
         pmeta_get_methods(
-                pmeta_nameof(distanceTo), &Point::distanceTo<Precision>,
+                std::string_view(pmeta_nameof(distanceTo)), &Point::distanceTo<Precision>,
                 pmeta_reflectible_attribute(&Point::angleToXY),
                 pmeta_reflectible_attribute(&Point::angleToXZ)
         );
