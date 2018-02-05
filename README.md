@@ -26,6 +26,7 @@ Phiste's C++ Utilities
 * [Devices](devices/README.md)
 * [Http](http/README.md)
 * [Lua](lua/README.md)
+* [Python](python/README.md)
 * [Mediator](mediator/README.md)
 * [Meta](meta/README.md)
 * [PluginManager](pluginManager/README.md)

@@ -5,6 +5,7 @@ add_subdirectory(connection)
 add_subdirectory(pluginManager)
 add_subdirectory(http)
 add_subdirectory(lua)
+add_subdirectory(python)
 
 if (PUTILS_BUILD_PSE)
     add_subdirectory(pse)
