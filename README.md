@@ -24,14 +24,14 @@ Phiste's C++ Utilities
 
 * [Connection](connection/README.md)
 * [Devices](devices/README.md)
-* [Http](http/README.md)
-* [Lua](lua/README.md)
-* [Python](python/README.md)
-* [Mediator](mediator/README.md)
+* [Http](http/README.md) (enabled with the PUTILS_BUILD_HTTP CMake option)
+* [Lua](lua/README.md) (enabled with the PUTILS_BUILD_LUA CMake option)
+* [Python](python/README.md) (enabled with the PUTILS_BUILD_PYTHON CMake option)
+* [Mediator](mediator/README.md) (enabled with the PUTILS_BUILD_MEDIATOR CMake option)
 * [Meta](meta/README.md)
 * [PluginManager](pluginManager/README.md)
-* [POgre](pogre/README.md)
-* [PSE](pse/README.md)
+* [POgre](pogre/README.md) (enabled with the PUTILS_BUILD_POGRE CMake option)
+* [PSE](pse/README.md) (enabled with the PUTILS_BUILD_PSE CMake option)
 * [Reflection](reflection/README.md)
 
 ### Function-only headers
