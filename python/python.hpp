@@ -19,11 +19,11 @@ namespace putils {
 
             py::class_<T> type(m, T::get_class_name(), py::dynamic_attr());
             pmeta::tuple_for_each(T::get_attributes().getKeyValues(), [&type](auto && p) {
-                using MemberType = decltype(std::declval<T>().*(p.second));
-                if constexpr (std::is_assignable<MemberType, MemberType>::value)
-                    type.def_readwrite(p.first.data(), p.second);
-                else
+                using MemberType = std::remove_reference_t<decltype(std::declval<T>().*(p.second))>;
+                if constexpr (std::is_const<MemberType>::value)
                     type.def_readonly(p.first.data(), p.second);
+                else
+                    type.def_readwrite(p.first.data(), p.second);
             });
 
             pmeta::tuple_for_each(T::get_methods().getKeyValues(), [&type](auto && p) {
