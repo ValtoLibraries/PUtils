@@ -64,8 +64,8 @@ TEST(PointTest, AngleTo)
     putils::Point2i p{ 0, 0 };
     putils::Point2i right{ 5, 0 };
     putils::Point2i left{ -5, 0 };
-    putils::Point2i top{ 0, 5 };
-    putils::Point2i bottom{ 0, -5 };
+    putils::Point2i bottom{ 0, 5 };
+    putils::Point2i top{ 0, -5 };
 
     EXPECT_EQ(p.angleTo(right), 0);
     EXPECT_EQ(p.angleTo(left), M_PI);
@@ -78,8 +78,8 @@ TEST(PointTest, AngleTo3dXY)
     putils::Point3i p{ 0, 0 };
     putils::Point3i right{ 5, 0 };
     putils::Point3i left{ -5, 0 };
-    putils::Point3i top{ 0, 5 };
-    putils::Point3i bottom{ 0, -5 };
+    putils::Point3i bottom{ 0, 5 };
+    putils::Point3i top{ 0, -5 };
 
     EXPECT_EQ(p.angleToXY(right), 0);
     EXPECT_EQ(p.angleToXY(left), M_PI);
@@ -92,11 +92,11 @@ TEST(PointTest, AngleTo3dXZ)
     putils::Point3i p{ 0, 0 };
     putils::Point3i right{ 5, 0 };
     putils::Point3i left{ -5, 0 };
-    putils::Point3i top{ 0, 0, 5 };
-    putils::Point3i bottom{ 0, 0, -5 };
+    putils::Point3i bottom{ 0, 0, 5 };
+    putils::Point3i top{ 0, 0, -5 };
 
     EXPECT_EQ(p.angleToXZ(right), 0);
-    EXPECT_EQ(p.angleToXZ(left), M_PI);
+    EXPECT_TRUE(p.angleToXZ(left) == M_PI || p.angleToXZ(left) == -M_PI);
     EXPECT_EQ(p.angleToXZ(top), M_PI_2);
     EXPECT_EQ(p.angleToXZ(bottom), -M_PI_2);
 }

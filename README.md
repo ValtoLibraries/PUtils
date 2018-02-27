@@ -16,7 +16,6 @@ Phiste's C++ Utilities
 * [Point](Point.md) Simple abstraction to a 2D or 3D point/rectangle.
 * PooledObject: A mix-in class that turns any type into a pooled type
 * [Process](Process.md) Abstraction to a process (useful to run system commands and send them input/get their output)
-* [QuadTree](QuadTree.md) Space partitioner optimized for searching for an object's closest neighbors.
 * [RAII](RAII.md) A class template able to perform RAII on any type.
 * [Timer](Timer.md) Simple timer based on std::chrono.
 
