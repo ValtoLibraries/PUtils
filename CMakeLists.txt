@@ -1,10 +1,23 @@
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/CMakeModules)
 
-add_subdirectory(mediator)
 add_subdirectory(connection)
 add_subdirectory(pluginManager)
-add_subdirectory(http)
-add_subdirectory(lua)
+
+if(PUTILS_BUILD_MEDIATOR)
+    add_subdirectory(mediator)
+endif()
+
+if(PUTILS_BUILD_HTTP)
+    add_subdirectory(http)
+endif()
+
+if(PUTILS_BUILD_LUA)
+    add_subdirectory(lua)
+endif()
+
+if(PUTILS_BUILD_PYTHON)
+    add_subdirectory(python)
+endif()
 
 if (PUTILS_BUILD_PSE)
     add_subdirectory(pse)
@@ -30,9 +43,12 @@ if (PUTILS_TEST)
     if (CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)
         append_coverage_compiler_flags()
-        setup_target_for_coverage(NAME ${test_name}_coverage
-                EXECUTABLE ${test_name}
-                coverage)
+        find_program(lcov_found NAMES lcov)
+        if (lcov_found)
+            setup_target_for_coverage(NAME ${test_name}_coverage
+                    EXECUTABLE ${test_name}
+                    coverage)
+        endif()
     endif ()
 endif ()
 

@@ -56,7 +56,7 @@ namespace putils {
              */
 
             static void serialize(std::ostream & s, std::string_view name, bool value) {
-                s << name << ": " << std::boolalpha << value << std::noboolalpha;
+                s << '"' << name << '"' << ": " << std::boolalpha << value << std::noboolalpha;
             }
 
             static void unserialize(std::istream & s, bool & attr) {
@@ -88,7 +88,7 @@ namespace putils {
 
             template<typename Map>
             static void printMap(std::ostream & s, std::string_view name, Map && map) {
-                s << name << ": {";
+                s << '"' << name << '"' << ": {";
                 bool first = true;
                 for (const auto & pair : map) {
                     if (!first)
@@ -205,7 +205,7 @@ namespace putils {
 
             template<typename Container>
             static void printContainer(std::ostream & s, std::string_view name, const Container & container) {
-                s << name << ": [";
+                s << '"' << name << '"' << ": [";
                 bool first = true;
                 for (const auto & val : container) {
                     if (!first)
@@ -280,13 +280,13 @@ namespace putils {
             template<typename T>
             static void serialize(std::ostream & s, std::string_view name, const T & attr) {
                 if constexpr (std::is_enum<T>::value)
-                    s << name << ": " << (int) attr;
+                    s << '"' << name << '"' << ": " << (int) attr;
                 else if constexpr (std::is_pointer<T>::value)
                     printPtr(s, name, attr);
                 else if constexpr (std::is_constructible<std::string_view, T>::value)
-                    s << name << ": \"" << attr << "\"";
+                    s << '"' << name << '"' << ": \"" << attr << "\"";
                 else if constexpr (putils::is_streamable<std::ostream, T>::value)
-                    s << name << ": " << attr;
+                    s << '"' << name << '"' << ": " << attr;
             }
 
             template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>

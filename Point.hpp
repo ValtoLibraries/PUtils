@@ -59,7 +59,7 @@ namespace putils {
         }
 
         double angleTo(const Point<Precision, 3> & rhs) const noexcept {
-            return std::atan2(rhs.y - y, rhs.x - x);
+            return std::atan2(y - rhs.y, rhs.x - x);
         }
 
         pmeta_get_class_name("Point2");
@@ -68,7 +68,7 @@ namespace putils {
                 pmeta_reflectible_attribute(&Point::y)
         );
         pmeta_get_methods(
-                pmeta_nameof(distanceTo), &Point::distanceTo<Precision>,
+                std::string_view(pmeta_nameof(distanceTo)), &Point::distanceTo<Precision>,
                 pmeta_reflectible_attribute(&Point::angleTo)
         );
         pmeta_get_parents();
@@ -183,11 +183,11 @@ namespace putils {
         }
 
         double angleToXY(const Point<Precision, 3> & rhs) const noexcept {
-            return std::atan2(rhs.y - y, rhs.x - x);
+            return std::atan2(y - rhs.y, rhs.x - x);
         }
 
         double angleToXZ(const Point<Precision, 3> & rhs) const noexcept {
-            return std::atan2(rhs.z - z, rhs.x - x);
+            return std::atan2(z - rhs.z, rhs.x - x);
         }
 
         pmeta_get_class_name("Point3");
@@ -197,7 +197,7 @@ namespace putils {
                 pmeta_reflectible_attribute(&Point::z)
         );
         pmeta_get_methods(
-                pmeta_nameof(distanceTo), &Point::distanceTo<Precision>,
+                std::string_view(pmeta_nameof(distanceTo)), &Point::distanceTo<Precision>,
                 pmeta_reflectible_attribute(&Point::angleToXY),
                 pmeta_reflectible_attribute(&Point::angleToXZ)
         );

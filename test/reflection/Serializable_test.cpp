@@ -12,14 +12,14 @@ struct SerializableTest : testing::Test
 
 TEST_F(SerializableTest, Serialize)
 {
-    EXPECT_EQ(putils::to_string(T()), "{x: 42}");
+    EXPECT_EQ(putils::to_string(T()), "{\"x\": 42}");
 }
 
 TEST_F(SerializableTest, Unserialize)
 {
     T obj;
     std::stringstream s;
-    s << "{x: 84}";
+    s << "{\"x\": 84}";
     s >> obj;
     EXPECT_EQ(obj.x, 84);
 }
@@ -28,7 +28,7 @@ TEST_F(SerializableTest, UnserializeWhiteSpace)
 {
     T obj;
     std::stringstream s;
-    s << "   {    x    :  84   } ";
+    s << "   {    \"x\"    :  84   } ";
     s >> obj;
     EXPECT_EQ(obj.x, 84);
 }
@@ -45,7 +45,7 @@ TEST_F(SerializableTest, MultipleFields)
         int y = 84;
     };
 
-    EXPECT_EQ(putils::to_string(M()), "{x: 42, y: 84}");
+    EXPECT_EQ(putils::to_string(M()), "{\"x\": 42, \"y\": 84}");
 }
 
 TEST_F(SerializableTest, UnserializeMultipleFields)
@@ -62,7 +62,7 @@ TEST_F(SerializableTest, UnserializeMultipleFields)
 
     M obj;
     std::stringstream s;
-    s << "{x: 84, y: 42 }";
+    s << "{\"x\": 84, \"y\": 42 }";
     s >> obj;
     EXPECT_EQ(obj.x, 84);
     EXPECT_EQ(obj.y, 42);
@@ -76,7 +76,7 @@ TEST_F(SerializableTest, Vector)
         std::vector<int> x = { 0, 1, 2, 3 };
     };
 
-    EXPECT_EQ(putils::to_string(M()), "{x: [0,1,2,3]}");
+    EXPECT_EQ(putils::to_string(M()), "{\"x\": [0,1,2,3]}");
 }
 
 TEST_F(SerializableTest, List)
@@ -87,7 +87,7 @@ TEST_F(SerializableTest, List)
         std::list<int> x = { 0, 1, 2, 3 };
     };
 
-    EXPECT_EQ(putils::to_string(M()), "{x: [0,1,2,3]}");
+    EXPECT_EQ(putils::to_string(M()), "{\"x\": [0,1,2,3]}");
 }
 
 TEST_F(SerializableTest, Ptr)
@@ -98,7 +98,7 @@ TEST_F(SerializableTest, Ptr)
         int *x = new int(42);
     };
 
-    EXPECT_EQ(putils::to_string(M()), "{x: 42}");
+    EXPECT_EQ(putils::to_string(M()), "{\"x\": 42}");
 }
 
 TEST_F(SerializableTest, UnserializePtr)
@@ -111,7 +111,7 @@ TEST_F(SerializableTest, UnserializePtr)
 
     M obj;
     std::stringstream s;
-    s << "{x: 21}";
+    s << "{\"x\": 21}";
     s >> obj;
     EXPECT_EQ(*obj.x, 21);
 }
@@ -124,7 +124,7 @@ TEST_F(SerializableTest, UniquePtr)
         std::unique_ptr<int> x { new int(42) };
     };
 
-    EXPECT_EQ(putils::to_string(M()), "{x: 42}");
+    EXPECT_EQ(putils::to_string(M()), "{\"x\": 42}");
 }
 
 TEST_F(SerializableTest, SharedPtr)
@@ -135,7 +135,7 @@ TEST_F(SerializableTest, SharedPtr)
         std::shared_ptr<int> x { new int(42) };
     };
 
-    EXPECT_EQ(putils::to_string(M()), "{x: 42}");
+    EXPECT_EQ(putils::to_string(M()), "{\"x\": 42}");
 }
 
 TEST_F(SerializableTest, Map)
@@ -146,7 +146,7 @@ TEST_F(SerializableTest, Map)
         std::map<std::string, int> x { { "one", 1 }, { "two", 2 }, { "three", 3 } };
     };
 
-    EXPECT_EQ(putils::to_string(M()), "{x: {one: 1, three: 3, two: 2}}");
+    EXPECT_EQ(putils::to_string(M()), "{\"x\": {\"one\": 1, \"three\": 3, \"two\": 2}}");
 }
 
 TEST_F(SerializableTest, UnserializeMap)
@@ -159,7 +159,7 @@ TEST_F(SerializableTest, UnserializeMap)
 
     M obj;
     std::stringstream s;
-    s << "{ x: { one: 2, two: 1 } }";
+    s << "{ \"x\": { \"one\": 2, \"two\": 1 } }";
     s >> obj;
     EXPECT_EQ(obj.x["one"], 2);
     EXPECT_EQ(obj.x["two"], 1);
@@ -173,7 +173,7 @@ TEST_F(SerializableTest, UnorderedMap)
         std::unordered_map<std::string, int> x { { "one", 1 }, { "two", 2 }, { "three", 3 } };
     };
 
-    EXPECT_EQ(putils::to_string(M()), "{x: {three: 3, two: 2, one: 1}}");
+    EXPECT_EQ(putils::to_string(M()), "{\"x\": {\"three\": 3, \"two\": 2, \"one\": 1}}");
 }
 
 TEST_F(SerializableTest, Reflectible)
@@ -196,5 +196,5 @@ TEST_F(SerializableTest, Reflectible)
         static void get_parents() {}
     };
 
-    EXPECT_EQ(putils::to_string(M()), "{str: \"msg\", i: 42}");
+    EXPECT_EQ(putils::to_string(M()), "{\"str\": \"msg\", \"i\": 42}");
 }

@@ -2,6 +2,7 @@
 
 #ifdef _WIN32
 
+#include <string>
 #include <direct.h>
 #include <windows.h>
 #include <datetimeapi.h>
@@ -16,7 +17,7 @@ namespace putils
     {
         // Constructor
     public:
-        WindowsDirectory(std::string_view path)
+        WindowsDirectory(const std::string & path)
             :
         _path(path),
         _goOn(true)

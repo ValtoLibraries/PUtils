@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string_view>
+#include <string>
 #include <regex>
 
 bool operator==(const std::string & str, const std::regex & reg) {

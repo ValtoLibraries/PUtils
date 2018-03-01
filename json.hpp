@@ -133,6 +133,9 @@ namespace putils {
                 std::string key = lexValue(s);
                 ret.value += key;
 
+                while (std::isspace(s.peek()))
+                    s.get();
+
                 ret.value.append(1, s.get()); // Skip ':'
 
                 while (std::isspace(s.peek()))

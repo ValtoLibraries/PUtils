@@ -43,7 +43,7 @@ namespace kia {
         return packets::HttpResponse{ origin.clientFd, origin.httpVersion, "200", "", {}, "" };
     };
 
-    inline packets::HttpResponse error(const packets::HttpRequest & origin, std::string_view reasonPhrase = "") {
-        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, "400", reasonPhrase.data(), {}, "" };
+    inline packets::HttpResponse error(const packets::HttpRequest & origin, const std::string & reasonPhrase = "") {
+        return packets::HttpResponse{ origin.clientFd, origin.httpVersion, "400", reasonPhrase, {}, "" };
     }
 }

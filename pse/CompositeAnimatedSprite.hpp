@@ -33,10 +33,6 @@ namespace pse {
 
         void setSize(const sf::Vector2f & size) noexcept override;
 
-        void setX(double x) noexcept override;
-
-        void setY(double y) noexcept override;
-
         // AnimatedSprite functions
     public:
         void stopAnimation() noexcept override;
