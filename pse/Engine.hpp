@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <functional>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -67,7 +68,7 @@ namespace pse {
         // Update the engine
         // clear: whether or not the screen should be splashed black
     public:
-        void update(bool clear = true) noexcept;
+        void update(bool clear = true, const std::function<void()> & preDisplay = nullptr) noexcept;
 
         // Poll event
     public:

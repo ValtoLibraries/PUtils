@@ -11,20 +11,22 @@ set(SFML_INCLUDE_DIR ${SFML_ROOT}/include)
 # SFML linking for SFML Engine
 #
 
-# if (UNIX)
-set(SFML_LIBRARIES sfml-graphics sfml-window sfml-system)
-# endif (UNIX)
+#if (UNIX)
+	set(SFML_LIBRARIES sfml-graphics sfml-window sfml-system)
+#endif (UNIX)
 
-# if (WIN32)
-#     set(SFML_LIBRARIES
-#             debug sfml-graphics-d
-#             debug sfml-window-d
-#             debug sfml-system-d
-#             optimized sfml-graphics
-#             optimized sfml-window
-#             optimized sfml-system
-#             )
-# endif (WIN32)
+#if (WIN32)
+#    set(SFML_LIBRARIES
+#            debug sfml-graphics-d
+#            debug sfml-window-d
+#            debug sfml-system-d
+#            optimized sfml-graphics
+#            optimized sfml-window
+#            optimized sfml-system
+#            )
+#endif (WIN32)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
 
 if (TGUI)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPSE_TGUI" PARENT_SCOPE)
@@ -48,6 +50,8 @@ endif (TGUI)
 #
 
 file(GLOB pseSrc
+        imgui/imgui.cpp imgui/imgui_draw.cpp
+        imgui/imgui-SFML.cpp imgui/imgui_demo.cpp
         *.cpp *.hpp)
 
 if (UNIX)
@@ -57,5 +61,5 @@ elseif (WIN32)
 endif ()
 
 add_library(pse ${type} ${pseSrc})
-target_include_directories(pse PUBLIC ${CMAKE_CURRENT_LIST_DIR} ${SFML_INCLUDE_DIR})
+target_include_directories(pse PUBLIC ${CMAKE_CURRENT_LIST_DIR} ${SFML_INCLUDE_DIR} imgui)
 target_link_libraries(pse putils ${SFML_LIBRARIES})
