@@ -22,7 +22,6 @@ namespace putils
     public:
         template<typename String>
             WindowsLibrary(String && name) : Library(FWD(name)) {
-                std::cout << name << std::endl;
                 std::string copy(name);
 
                 std::replace(copy.begin(), copy.end(), '/', '\\');
