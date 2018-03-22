@@ -26,8 +26,6 @@ set(SFML_INCLUDE_DIR ${SFML_ROOT}/include)
 #            )
 #endif (WIN32)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
-
 if (TGUI)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPSE_TGUI" PARENT_SCOPE)
     add_definitions(-DPSE_TGUI)
