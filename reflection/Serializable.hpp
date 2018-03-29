@@ -40,7 +40,7 @@ namespace putils
                     return;
                 _first = false;
 
-                _attrs = std::make_unique<std::tuple<Attrs...>>(attrs);
+                _attrs = new std::tuple<Attrs...>(attrs);
             }
 
             // For each member pointer in _attrs, serialize it
@@ -77,7 +77,7 @@ namespace putils
 
             // Static tuple containing the member pointers to be serialized for this class (Derived)
         private:
-            static inline std::unique_ptr<std::tuple<Attrs ...>> _attrs = nullptr;
+            static inline std::tuple<Attrs ...> * _attrs = nullptr;
             static inline std::atomic<bool> _first = true;
         };
 
@@ -93,7 +93,7 @@ namespace putils
         Serializable(Fields &&...attrs)
         {
             if (!_serializer)
-                _serializer.reset(new Serializer<Fields...>(std::tuple<Fields...>(FWD(attrs)...)));
+                _serializer = new Serializer<Fields...>(std::tuple<Fields...>(FWD(attrs)...));
         }
 
         // Reflectible constructor
@@ -106,7 +106,7 @@ namespace putils
             );
 
             if (!_serializer)
-                _serializer.reset(make_serializer(Derived::get_attributes().getKeyValues()));
+                _serializer = make_serializer(Derived::get_attributes().getKeyValues());
         }
 
     public:
@@ -135,6 +135,6 @@ namespace putils
         }
 
     private:
-        static inline std::unique_ptr<SerializerBase> _serializer = nullptr;
+        static inline SerializerBase * _serializer = nullptr;
     };
 }
