@@ -208,10 +208,12 @@ namespace putils {
                 s << '"' << name << '"' << ": [";
                 bool first = true;
                 for (const auto & val : container) {
-                    if (!first)
-                        s << ",";
-                    s << val;
-                    first = false;
+					if constexpr (putils::is_streamable<std::ostream, pmeta_typeof(val)>::value) {
+						if (!first)
+							s << ",";
+						s << val;
+						first = false;
+					}
                 }
 
                 s << "]";
