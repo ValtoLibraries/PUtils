@@ -16,7 +16,7 @@ namespace putils
     // OutputPolicy: type ressembling DefaultOutputPolicy (above), with a
     // template<T> static int serialize(std::ostream &s, const T &attr) function that will be called to
     // serialize each attribute
-    template<typename Derived, bool Unserialize = true, typename OutputPolicy = OutputPolicies::Json>
+    template<typename Derived, typename OutputPolicy = OutputPolicies::Json>
     class Serializable
     {
         // Serialization implementation detail: pointer to generic tuple which will be serialized
@@ -62,13 +62,10 @@ namespace putils
                 OutputPolicy::endSerialize(s);
             }
 
-            void unserializeImpl(putils::Serializable<Derived, true, OutputPolicy> *obj, std::istream &s)
+            void unserializeImpl(putils::Serializable<Derived, OutputPolicy> *obj, std::istream &s)
             {
                 OutputPolicy::unserialize(s, *static_cast<Derived*>(obj), *_attrs);
             }
-
-            void unserializeImpl(putils::Serializable<Derived, false, OutputPolicy> *, std::istream &) noexcept
-            {}
 
             void unserialize(Derived *obj, std::istream &s) override
             {

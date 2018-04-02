@@ -46,8 +46,16 @@ namespace putils {
                 const auto jsonObject = putils::json::lex(str);
 
                 pmeta::tuple_for_each(tuple, [&s, &obj, &jsonObject](const auto & attr) {
-                    std::stringstream stream(jsonObject[std::string(attr.first)]);
-                    unserialize(stream, obj.*(attr.second));
+					using MemberType = std::remove_reference_t<decltype(std::declval<T>().*(attr.second))>;
+
+					if constexpr (!std::is_const<MemberType>::value && !std::is_abstract<MemberType>::value) {
+						const auto it = jsonObject.fields.find(std::string(attr.first));
+						if (it == jsonObject.fields.end())
+							return;
+
+						std::stringstream stream(it->second);
+						unserialize(stream, obj.*(attr.second));
+					}
                 });
             };
 
@@ -187,16 +195,20 @@ namespace putils {
             static void serialize(std::ostream & s, std::string_view name, const std::unique_ptr<T> & ptr) { printPtr(s, name, ptr); }
             template<typename T>
             static void unserialize(std::istream & s, std::unique_ptr<T> & ptr) {
-                ptr.reset(new T);
-                unserializePtr(s, ptr);
+				if constexpr (!std::is_abstract_v<T>) {
+					ptr.reset(new T);
+					unserializePtr(s, ptr);
+				}
             }
 
             template<typename T>
             static void serialize(std::ostream & s, std::string_view name, const std::shared_ptr<T> & ptr) { printPtr(s, name, ptr); }
             template<typename T>
             static void unserialize(std::istream & s, std::shared_ptr<T> & ptr) {
-                ptr.reset(new T);
-                unserializePtr(s, ptr);
+				if constexpr (!std::is_abstract_v<T>) {
+					ptr.reset(new T);
+					unserializePtr(s, ptr);
+				}
             }
 
             /*
@@ -252,7 +264,8 @@ namespace putils {
                     else
                         value.append(1, c);
                 }
-                std::stringstream(putils::chop(value)) >> attr;
+				if constexpr (putils::is_unstreamable<std::stringstream, T>::value)
+					std::stringstream(putils::chop(value)) >> attr;
             }
 
             template<typename T>
@@ -334,7 +347,8 @@ namespace putils {
                         value.append(1, c);
                 }
 
-                std::stringstream(putils::chop(value)) >> attr;
+				if constexpr (putils::is_unstreamable<std::stringstream, T>::value)
+					std::stringstream(putils::chop(value)) >> attr;
             }
 
             template<typename T>

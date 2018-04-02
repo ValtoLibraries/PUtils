@@ -54,8 +54,8 @@ namespace putils {
             }
         };
 
-        template<typename String>
-        Object lex(String && str);
+        Object lex(std::istream & s);
+        Object lex(const std::string & str);
     }
 }
 
@@ -119,11 +119,11 @@ namespace putils {
         }
 
         namespace {
-            std::string lexValue(std::istringstream & s);
-            Object lexArray(std::istringstream & s);
-            Object lexObject(std::istringstream & s);
+            std::string lexValue(std::istream & s);
+            Object lexArray(std::istream & s);
+            Object lexObject(std::istream & s);
 
-            void readKeyValue(std::istringstream & s, Object & ret) {
+            void readKeyValue(std::istream & s, Object & ret) {
                 while (std::isspace(s.peek()))
                     s.get();
 
@@ -151,7 +151,7 @@ namespace putils {
                 ret.value += ret[key].value;
             }
 
-            std::string lexValue(std::istringstream & s) {
+            std::string lexValue(std::istream & s) {
                 std::string ret;
 
                 if (s.peek() == '"') {
@@ -182,6 +182,9 @@ namespace putils {
                 }
 
                 ret = putils::chop(ret);
+				if (ret.empty())
+					return ret;
+
                 if ((ret.front() == '\"' && ret.back() == '\"') ||
                     (ret.front() == '\'' && ret.back() == '\''))
                     ret = ret.substr(1, ret.size() - 2);
@@ -189,7 +192,7 @@ namespace putils {
                 return ret;
             }
 
-            Object lexObject(std::istringstream & s) {
+            Object lexObject(std::istream & s) {
                 Object ret;
 
                 while (std::isspace(s.peek()))
@@ -229,7 +232,7 @@ namespace putils {
                 return ret;
             }
 
-            Object lexArray(std::istringstream & s) {
+            Object lexArray(std::istream & s) {
                 Object ret;
                 ret.type = Object::Type::Array;
 
@@ -267,18 +270,19 @@ namespace putils {
             }
         }
 
-        template<typename Str>
-        Object lex(Str && str) {
-            std::istringstream s(FWD(str));
+		inline Object lex(std::istream & s) {
+			while (std::isspace(s.peek()))
+				s.get();
 
-            while (std::isspace(s.peek()))
-                s.get();
+			if (s.peek() == '{')
+				return lexObject(s);
+			if (s.peek() == '[')
+				return lexArray(s);
+			throw std::runtime_error(concat("Unexpected character " + s.peek()));
+		}
 
-            if (s.peek() == '{')
-                return lexObject(s);
-            if (s.peek() == '[')
-                return lexArray(s);
-            throw std::runtime_error(concat("Unexpected character " + s.peek()));
+        inline Object lex(const std::string & str) {
+            return lex(std::istringstream(FWD(str)));
         }
     }
 }

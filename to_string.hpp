@@ -24,7 +24,18 @@ namespace putils {
     }
 
     template<typename Obj>
-    Obj parse(std::string_view str) {
+    void parse(Obj & obj, const std::string & str) {
+        std::stringstream s(FWD(str));
+        s >> obj;
+    };
+
+    template<>
+    inline void parse(bool & obj, const std::string & str) {
+		obj = (str == "true");
+    };
+
+    template<typename Obj>
+    Obj parse(const std::string & str) {
         std::stringstream s(FWD(str));
 
         Obj ret;
@@ -33,5 +44,5 @@ namespace putils {
     };
 
     template<>
-    inline bool parse(std::string_view str) { return str == "true"; }
+    inline bool parse(const std::string & str) { return str == "true"; }
 }
