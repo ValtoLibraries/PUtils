@@ -188,27 +188,18 @@ namespace putils {
             template<typename Ptr>
             static void printPtr(std::ostream & s, std::string_view name, Ptr && ptr) { serialize(s, name, *ptr); }
 
-            template<typename Ptr>
-            static void unserializePtr(std::istream & s, Ptr && ptr) { unserialize(s, *ptr); }
-
             template<typename T>
             static void serialize(std::ostream & s, std::string_view name, const std::unique_ptr<T> & ptr) { printPtr(s, name, ptr); }
             template<typename T>
             static void unserialize(std::istream & s, std::unique_ptr<T> & ptr) {
-				if constexpr (!std::is_abstract_v<T>) {
-					ptr.reset(new T);
-					unserializePtr(s, ptr);
-				}
+				ptr = nullptr;
             }
 
             template<typename T>
             static void serialize(std::ostream & s, std::string_view name, const std::shared_ptr<T> & ptr) { printPtr(s, name, ptr); }
             template<typename T>
             static void unserialize(std::istream & s, std::shared_ptr<T> & ptr) {
-				if constexpr (!std::is_abstract_v<T>) {
-					ptr.reset(new T);
-					unserializePtr(s, ptr);
-				}
+				ptr = nullptr;
             }
 
             /*
@@ -247,7 +238,8 @@ namespace putils {
                 while (s.peek() != ']') {
                     T obj;
                     unserializeContainerElement(s, obj);
-                    attr.push_back(obj);
+					if constexpr (!std::is_pointer<T>::value)
+						attr.push_back(obj);
                     while (s.peek() != ']' && s.get() != ',');
                 }
 
@@ -264,8 +256,7 @@ namespace putils {
                     else
                         value.append(1, c);
                 }
-				if constexpr (putils::is_unstreamable<std::stringstream, T>::value)
-					std::stringstream(putils::chop(value)) >> attr;
+				unserialize(std::stringstream(putils::chop(value)), attr);
             }
 
             template<typename T>
@@ -312,8 +303,7 @@ namespace putils {
 
             template<typename T, typename = std::enable_if_t<std::is_pointer<T>::value>>
             static void unserializeImpl(std::istream & s, T & attr, std::string_view) {
-                attr = new typename std::remove_pointer<T>::type;
-                unserializePtr(s, attr);
+				attr = nullptr;
             }
 
             template<typename T, typename = std::enable_if_t<!std::is_enum<T>::value && !std::is_pointer<T>::value>>
