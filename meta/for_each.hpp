@@ -40,6 +40,7 @@ namespace pmeta {
         detail::tuple_for_each(std::forward<F>(f), tuple, std::index_sequence_for<Args...>());
     }
 
+#define pmeta_comma ,
 #define pmeta_for_each(_TYPES_, _FUNC_) \
 	pmeta::tuple_for_each(std::tuple<pmeta::type<_TYPES_>...>(), _FUNC_)
 }
