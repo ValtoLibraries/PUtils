@@ -79,7 +79,7 @@ namespace putils
         };
 
         template<typename ...Args>
-        auto make_serializer(const std::tuple<Args...> &tuple)
+        static auto make_serializer(const std::tuple<Args...> &tuple)
         {
             return new Serializer<Args...>(tuple);
         }
@@ -109,6 +109,10 @@ namespace putils
     public:
         std::ostream &serialize(std::ostream &s) const noexcept
         {
+			if constexpr (putils::is_reflectible<Derived>::value)
+				if (_serializer == nullptr)
+					_serializer = make_serializer(Derived::get_attributes().getKeyValues());
+
             auto __tmp = static_cast<const Derived *>(this);
             _serializer->serialize(__tmp, s);
             return s;
@@ -116,6 +120,10 @@ namespace putils
 
         std::istream &unserialize(std::istream &s)
         {
+			if constexpr (putils::is_reflectible<Derived>::value)
+				if (_serializer == nullptr)
+					_serializer = make_serializer(Derived::get_attributes().getKeyValues());
+
             _serializer->unserialize(static_cast<Derived *>(this), s);
             return s;
         }
