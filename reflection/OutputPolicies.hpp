@@ -77,7 +77,7 @@ namespace putils {
                 */
 
                 std::string value;
-                while (s.peek() != ',' && s.peek() != '}') {
+                while (s && s.peek() != ',' && s.peek() != '}') {
                     const char c = s.get();
                     if (c == '\\')
                         value.append(1, s.get());
