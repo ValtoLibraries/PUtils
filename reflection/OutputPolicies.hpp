@@ -256,7 +256,8 @@ namespace putils {
                     else
                         value.append(1, c);
                 }
-				unserialize(std::stringstream(putils::chop(value)), attr);
+				std::stringstream tmp(putils::chop(value));
+				unserialize(tmp, attr);
             }
 
             template<typename T>

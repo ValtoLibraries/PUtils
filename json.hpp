@@ -282,7 +282,8 @@ namespace putils {
 		}
 
         inline Object lex(const std::string & str) {
-            return lex(std::istringstream(FWD(str)));
+			std::istringstream s(FWD(str));
+            return lex(s);
         }
     }
 }
