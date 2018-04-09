@@ -36,11 +36,8 @@ namespace putils
         {
             Serializer(const std::tuple<Attrs...> &attrs)
             {
-                if (!_first)
-                    return;
-                _first = false;
-
-                _attrs = new std::tuple<Attrs...>(attrs);
+				if (_attrs == nullptr)
+					_attrs = new std::tuple<Attrs...>(attrs);
             }
 
             // For each member pointer in _attrs, serialize it
@@ -75,7 +72,6 @@ namespace putils
             // Static tuple containing the member pointers to be serialized for this class (Derived)
         private:
             static inline std::tuple<Attrs ...> * _attrs = nullptr;
-            static inline std::atomic<bool> _first = true;
         };
 
         template<typename ...Args>
