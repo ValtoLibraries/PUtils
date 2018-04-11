@@ -26,7 +26,7 @@ namespace putils {
         const Mediator * getMediator() const { return _mediator; }
         Mediator * getMediator() { return _mediator; }
 
-    protected:
+    public:
         template<typename T>
         void send(const T & data) const {
             sendDataPacket(DataPacket<T>(data));
