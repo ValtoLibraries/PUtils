@@ -48,7 +48,7 @@ namespace pse {
         sf::Text::Style _style;
 
     private:
-        static inline std::unordered_map<std::string, std::unique_ptr<sf::Font>> fonts;
+        static inline std::unordered_map<std::string, std::unique_ptr<sf::Font>> &fonts = *(new std::unordered_map<std::string, std::unique_ptr<sf::Font>>);
 
         // Coplien
     public:

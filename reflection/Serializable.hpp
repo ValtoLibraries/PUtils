@@ -16,7 +16,7 @@ namespace putils
     // OutputPolicy: type ressembling DefaultOutputPolicy (above), with a
     // template<T> static int serialize(std::ostream &s, const T &attr) function that will be called to
     // serialize each attribute
-    template<typename Derived, bool Unserialize = true, typename OutputPolicy = OutputPolicies::Json>
+    template<typename Derived, typename OutputPolicy = OutputPolicies::Json>
     class Serializable
     {
         // Serialization implementation detail: pointer to generic tuple which will be serialized
@@ -36,11 +36,8 @@ namespace putils
         {
             Serializer(const std::tuple<Attrs...> &attrs)
             {
-                if (!_first)
-                    return;
-                _first = false;
-
-                _attrs = std::make_unique<std::tuple<Attrs...>>(attrs);
+				if (_attrs == nullptr)
+					_attrs = new std::tuple<Attrs...>(attrs);
             }
 
             // For each member pointer in _attrs, serialize it
@@ -62,13 +59,10 @@ namespace putils
                 OutputPolicy::endSerialize(s);
             }
 
-            void unserializeImpl(putils::Serializable<Derived, true, OutputPolicy> *obj, std::istream &s)
+            void unserializeImpl(putils::Serializable<Derived, OutputPolicy> *obj, std::istream &s)
             {
                 OutputPolicy::unserialize(s, *static_cast<Derived*>(obj), *_attrs);
             }
-
-            void unserializeImpl(putils::Serializable<Derived, false, OutputPolicy> *, std::istream &) noexcept
-            {}
 
             void unserialize(Derived *obj, std::istream &s) override
             {
@@ -77,12 +71,11 @@ namespace putils
 
             // Static tuple containing the member pointers to be serialized for this class (Derived)
         private:
-            static inline std::unique_ptr<std::tuple<Attrs ...>> _attrs = nullptr;
-            static inline std::atomic<bool> _first = true;
+            static inline std::tuple<Attrs ...> * _attrs = nullptr;
         };
 
         template<typename ...Args>
-        auto make_serializer(const std::tuple<Args...> &tuple)
+        static auto make_serializer(const std::tuple<Args...> &tuple)
         {
             return new Serializer<Args...>(tuple);
         }
@@ -93,7 +86,7 @@ namespace putils
         Serializable(Fields &&...attrs)
         {
             if (!_serializer)
-                _serializer.reset(new Serializer<Fields...>(std::tuple<Fields...>(FWD(attrs)...)));
+                _serializer = new Serializer<Fields...>(std::tuple<Fields...>(FWD(attrs)...));
         }
 
         // Reflectible constructor
@@ -106,12 +99,16 @@ namespace putils
             );
 
             if (!_serializer)
-                _serializer.reset(make_serializer(Derived::get_attributes().getKeyValues()));
+                _serializer = make_serializer(Derived::get_attributes().getKeyValues());
         }
 
     public:
         std::ostream &serialize(std::ostream &s) const noexcept
         {
+			if constexpr (putils::is_reflectible<Derived>::value)
+				if (_serializer == nullptr)
+					_serializer = make_serializer(Derived::get_attributes().getKeyValues());
+
             auto __tmp = static_cast<const Derived *>(this);
             _serializer->serialize(__tmp, s);
             return s;
@@ -119,6 +116,10 @@ namespace putils
 
         std::istream &unserialize(std::istream &s)
         {
+			if constexpr (putils::is_reflectible<Derived>::value)
+				if (_serializer == nullptr)
+					_serializer = make_serializer(Derived::get_attributes().getKeyValues());
+
             _serializer->unserialize(static_cast<Derived *>(this), s);
             return s;
         }
@@ -135,6 +136,6 @@ namespace putils
         }
 
     private:
-        static inline std::unique_ptr<SerializerBase> _serializer = nullptr;
+        static inline SerializerBase * _serializer = nullptr;
     };
 }

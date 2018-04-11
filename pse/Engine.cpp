@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Engine.hpp"
 
 namespace pse {
@@ -17,7 +16,7 @@ namespace pse {
                 0);
     }
 
-    void Engine::update(bool clear) noexcept {
+    void Engine::update(bool clear, const std::function<void()> & preDisplay) noexcept {
         if (clear)
             displayColor(sf::Color::Black);
 
@@ -27,6 +26,9 @@ namespace pse {
 #ifdef PSE_TGUI
         _tgui.draw();
 #endif
+
+        if (preDisplay != nullptr)
+            preDisplay();
 
         _window.display();
     }

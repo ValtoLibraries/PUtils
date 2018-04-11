@@ -11,6 +11,7 @@
 #elif defined(_WIN32)
 
 #include <windows.h>
+#include <processenv.h>
 
 #endif
 
@@ -37,8 +38,8 @@ namespace putils {
         auto dest = currentPath.substr(0, last);
 #ifdef __unix__
         chdir(dest.c_str());
-#elif defined(_Win32)
-        _chdir(dest.c_str());
+#elif defined(_WIN32)
+		SetCurrentDirectory(dest.c_str());
 #endif
     }
 }

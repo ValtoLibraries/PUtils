@@ -29,6 +29,7 @@ namespace pmeta {
     //      test
     //      1
     //
+
     template<typename F, typename ...Args>
     void tuple_for_each(std::tuple<Args...> & tuple, F && f) {
         detail::tuple_for_each(std::forward<F>(f), tuple, std::index_sequence_for<Args...>());
@@ -38,4 +39,8 @@ namespace pmeta {
     void tuple_for_each(const std::tuple<Args...> & tuple, F && f) {
         detail::tuple_for_each(std::forward<F>(f), tuple, std::index_sequence_for<Args...>());
     }
+
+#define pmeta_comma ,
+#define pmeta_for_each(_TYPES_, _FUNC_) \
+	pmeta::tuple_for_each(std::tuple<pmeta::type<_TYPES_>...>(), _FUNC_)
 }

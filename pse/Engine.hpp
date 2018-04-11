@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <functional>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -32,11 +33,12 @@ namespace pse {
     public:
         void addItem(ViewItem & item, size_t height = 0) { _items.push_back(std::make_pair(&item, height)); }
 
-        void removeItem(const ViewItem & item) {
-            _items.erase(std::find_if(_items.begin(), _items.end(),
-                                      [&item](auto & p) { return p.first == &item; })
-            );
-        }
+		void removeItem(const ViewItem & item) {
+			const auto it = std::find_if(_items.begin(), _items.end(),
+				[&item](auto & p) { return p.first == &item; });
+			if (it != _items.end())
+				_items.erase(it);
+		}
 
         void setItemHeight(const ViewItem & item, std::size_t height) {
             auto it = std::find_if(_items.begin(), _items.end(),
@@ -67,7 +69,7 @@ namespace pse {
         // Update the engine
         // clear: whether or not the screen should be splashed black
     public:
-        void update(bool clear = true) noexcept;
+        void update(bool clear = true, const std::function<void()> & preDisplay = nullptr) noexcept;
 
         // Poll event
     public:
