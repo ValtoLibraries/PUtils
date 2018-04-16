@@ -166,6 +166,7 @@ namespace putils {
                         unserialize(tmp, map[k]);
                     }
                 }
+				s.get(); // }
             }
 
             template<typename Key, typename Value>
@@ -340,8 +341,12 @@ namespace putils {
                         value.append(1, c);
                 }
 
-				if constexpr (putils::is_unstreamable<std::stringstream, T>::value)
-					std::stringstream(putils::chop(value)) >> attr;
+				if constexpr (putils::is_unstreamable<std::stringstream, T>::value) {
+					if (value[0] == '"')
+						std::stringstream(putils::chop(value.substr(1, value.size() - 2))) >> attr;
+					else
+						std::stringstream(putils::chop(value)) >> attr;
+				}
             }
 
             template<typename T>
