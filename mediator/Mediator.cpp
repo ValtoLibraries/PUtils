@@ -1,3 +1,4 @@
+#include <iostream>
 #include <algorithm>
 #include "Mediator.hpp"
 
@@ -27,7 +28,12 @@ namespace putils
     void Mediator::sendDataPacket(const ADataPacket &packet)
     {
         const auto &modules = _modules[packet.type];
-        for (auto m : modules)
-            m->receive(packet);
+        for (const auto m : modules) {
+			try {
+				m->receive(packet);
+			} catch (const std::exception & e) {
+				std::cerr << e.what() << std::endl;
+			}
+        }
     }
 }
