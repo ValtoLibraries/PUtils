@@ -13,10 +13,10 @@ std::cmatch operator==(const std::string & str, const std::pair<std::regex, bool
     return m;
 }
 
-std::pair<std::regex, bool> operator ""_m(const char * str, long unsigned int) {
+std::pair<std::regex, bool> operator ""_m(const char * str, size_t) {
     return std::make_pair(std::regex(str), true);
 }
 
-std::regex operator ""_r(const char * str, long unsigned int) {
+std::regex operator ""_r(const char * str, size_t) {
     return std::regex(str);
 }

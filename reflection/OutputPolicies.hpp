@@ -166,6 +166,7 @@ namespace putils {
                         unserialize(tmp, map[k]);
                     }
                 }
+				s.get(); // }
             }
 
             template<typename Key, typename Value>
@@ -286,14 +287,16 @@ namespace putils {
 
             template<typename T>
             static void serialize(std::ostream & s, std::string_view name, const T & attr) {
-                if constexpr (std::is_enum<T>::value)
-                    s << '"' << name << '"' << ": " << (int) attr;
-                else if constexpr (std::is_pointer<T>::value)
-                    printPtr(s, name, attr);
-                else if constexpr (std::is_constructible<std::string_view, T>::value)
-                    s << '"' << name << '"' << ": \"" << attr << "\"";
-                else if constexpr (putils::is_streamable<std::ostream, T>::value)
-                    s << '"' << name << '"' << ": " << attr;
+				if constexpr (std::is_enum<T>::value)
+					s << '"' << name << '"' << ": " << (int)attr;
+				else if constexpr (std::is_pointer<T>::value)
+					printPtr(s, name, attr);
+				else if constexpr (std::is_constructible<std::string_view, T>::value)
+					s << '"' << name << '"' << ": \"" << attr << "\"";
+				else if constexpr (putils::is_streamable<std::ostream, T>::value)
+					s << '"' << name << '"' << ": " << attr;
+				else
+					s << '"' << name << '"' << ": " << &attr;
             }
 
             template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
@@ -338,8 +341,12 @@ namespace putils {
                         value.append(1, c);
                 }
 
-				if constexpr (putils::is_unstreamable<std::stringstream, T>::value)
-					std::stringstream(putils::chop(value)) >> attr;
+				if constexpr (putils::is_unstreamable<std::stringstream, T>::value) {
+					if (value[0] == '"')
+						std::stringstream(putils::chop(value.substr(1, value.size() - 2))) >> attr;
+					else
+						std::stringstream(putils::chop(value)) >> attr;
+				}
             }
 
             template<typename T>

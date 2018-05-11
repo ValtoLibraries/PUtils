@@ -25,19 +25,19 @@ namespace putils {
                                   });
         }
 
+    public:
+        template<typename Response, typename Query>
+        Response query(Query && q) // q: DataPacket containing a "putils::BaseModule *sender" field
+        {
+            return Handler<Response>(getMediator(), FWD(q)).res;
+        }
+
     private:
         template<typename Data>
         void setHandler(const std::function<void(const Data &)> & handler) {
             _handlers[pmeta::type<Data>::index] = [this, handler](const ADataPacket & packet) {
                 handler(static_cast<const putils::DataPacket<Data> &>(packet).data);
             };
-        }
-
-    protected:
-        template<typename Response, typename Query>
-        Response query(Query && q) // q: DataPacket containing a "putils::BaseModule *sender" field
-        {
-            return Handler<Response>(getMediator(), FWD(q)).res;
         }
 
     private:
