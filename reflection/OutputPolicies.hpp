@@ -8,6 +8,7 @@
 #include <map>
 #include <unordered_set>
 #include <set>
+#include <type_traits>
 
 #include "meta/type.hpp"
 #include "to_string.hpp"
@@ -43,17 +44,17 @@ namespace putils {
                         break;
                 }
 
-                const auto jsonObject = putils::json::lex(str);
+                const auto jsonObject = putils::json(str);
 
                 pmeta::tuple_for_each(tuple, [&s, &obj, &jsonObject](const auto & attr) {
 					using MemberType = std::remove_reference_t<decltype(std::declval<T>().*(attr.second))>;
 
 					if constexpr (!std::is_const<MemberType>::value && !std::is_abstract<MemberType>::value) {
-						const auto it = jsonObject.fields.find(std::string(attr.first));
-						if (it == jsonObject.fields.end())
+						const auto it = jsonObject.find(std::string(attr.first));
+						if (it == jsonObject.end())
 							return;
 
-						std::stringstream stream(it->second);
+						std::stringstream stream(it->get<std::string>());
 						unserialize(stream, obj.*(attr.second));
 					}
                 });
@@ -215,7 +216,12 @@ namespace putils {
 					if constexpr (putils::is_streamable<std::ostream, pmeta_typeof(val)>::value) {
 						if (!first)
 							s << ",";
-						s << val;
+
+						if constexpr (std::is_constructible<std::string, decltype(val)>::value || std::is_pointer<pmeta_typeof(val)>::value)
+							s << '"' << val << '"';
+						else
+							s << val;
+
 						first = false;
 					}
                 }
@@ -296,7 +302,7 @@ namespace putils {
 				else if constexpr (putils::is_streamable<std::ostream, T>::value)
 					s << '"' << name << '"' << ": " << attr;
 				else
-					s << '"' << name << '"' << ": " << &attr;
+					s << '"' << name << '"' << ": " << '"' << &attr << '"';
             }
 
             template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
