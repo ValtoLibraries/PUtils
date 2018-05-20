@@ -44,7 +44,7 @@ namespace putils {
                         break;
                 }
 
-                const auto jsonObject = putils::json(str);
+                const auto jsonObject = putils::json::parse(str);
 
                 pmeta::tuple_for_each(tuple, [&s, &obj, &jsonObject](const auto & attr) {
 					using MemberType = std::remove_reference_t<decltype(std::declval<T>().*(attr.second))>;
@@ -54,7 +54,7 @@ namespace putils {
 						if (it == jsonObject.end())
 							return;
 
-						std::stringstream stream(it->get<std::string>());
+						std::stringstream stream(it->dump());
 						unserialize(stream, obj.*(attr.second));
 					}
                 });
