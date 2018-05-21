@@ -318,14 +318,6 @@ namespace putils {
 
             template<typename T, typename = std::enable_if_t<!std::is_enum<T>::value && !std::is_pointer<T>::value>>
             static void unserializeImpl(std::istream & s, T & attr, std::string) {
-                /*
-                                while (std::isspace(s.peek()))
-                                    s.get();
-                                while (s && s.get() != ':');
-                                while (std::isspace(s.peek()))
-                                    s.get();
-                */
-
                 std::string value;
                 std::size_t openBraces = 0;
                 while (s && s.peek() != -1) // && s.peek() != ',' && s.peek() != '}')
@@ -349,9 +341,9 @@ namespace putils {
 
 				if constexpr (putils::is_unstreamable<std::stringstream, T>::value) {
 					if (value[0] == '"')
-						std::stringstream(putils::chop(value.substr(1, value.size() - 2))) >> attr;
+						putils::parse(attr, putils::chop(value.substr(1, value.size() - 2)));
 					else
-						std::stringstream(putils::chop(value)) >> attr;
+						putils::parse(attr, putils::chop(value));
 				}
             }
 
