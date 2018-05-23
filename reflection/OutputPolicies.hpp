@@ -19,6 +19,65 @@
 namespace putils {
     namespace OutputPolicies {
         struct Json {
+			static std::string extractValue(std::istream & s) {
+				if (s.peek() == '"')
+					return extractString(s);
+				else if (s.peek() == '{')
+					return extractObject(s);
+				else
+					return extractTilComma(s);
+
+            }
+
+			static std::string extractString(std::istream & s) {
+				std::string value;
+
+				s.get();
+				while (s && s.peek() != -1) {
+					if (s.peek() == '"')
+						break;
+					else if (s.peek() == '\\')
+						s.get();
+					value.append(1, s.get());
+				}
+
+				return value;
+			}
+
+			static std::string extractObject(std::istream & s) {
+				std::string value;
+				std::size_t openBraces = 0;
+
+				while (s && s.peek() != -1) {
+					if (s.peek() == '{')
+						++openBraces;
+					else if (s.peek() == '}')
+						--openBraces;
+					else if (s.peek() == '\\')
+						s.get();
+
+					value.append(1, s.get());
+					if (!openBraces)
+						break;
+				}
+
+				return value;
+			}
+
+			static std::string extractTilComma(std::istream & s) {
+				std::string value;
+
+				if (s.peek() )
+				while (s && s.peek() != -1) {
+					if (s.peek() == ',')
+						break;
+					else
+						value.append(1, s.get());
+				}
+
+				return value;				
+			}
+
             static void startSerialize(std::ostream & s) { s << '{'; }
             static void endSerialize(std::ostream & s) { s << '}'; }
             static void serializeNewField(std::ostream & s) { s << ", "; }
@@ -253,16 +312,19 @@ namespace putils {
                 s.get();
             }
 
-            template<typename T>
-            static void unserializeContainerElement(std::istream & s, T & attr) {
-                std::string value;
-                while (s.peek() != ',' && s.peek() != ']') {
-                    const char c = s.get();
-                    if (c == '\\')
-                        value.append(1, s.get());
-                    else
-                        value.append(1, c);
-                }
+			template<typename T>
+			static void unserializeContainerElement(std::istream & s, T & attr) {
+				// std::string value;
+				// while (s.peek() != ',' && s.peek() != ']') {
+				// 	const char c = s.get();
+				// 	if (c == '\\')
+				// 		value.append(1, s.get());
+				// 	else
+				// 		value.append(1, c);
+				// }
+				// std::stringstream tmp(putils::chop(value));
+
+				const auto value = extractValue(s);
 				std::stringstream tmp(putils::chop(value));
 				unserialize(tmp, attr);
             }
@@ -318,26 +380,7 @@ namespace putils {
 
             template<typename T, typename = std::enable_if_t<!std::is_enum<T>::value && !std::is_pointer<T>::value>>
             static void unserializeImpl(std::istream & s, T & attr, std::string) {
-                std::string value;
-                std::size_t openBraces = 0;
-                while (s && s.peek() != -1) // && s.peek() != ',' && s.peek() != '}')
-                {
-                    if (s.peek() == '{')
-                        ++openBraces;
-                    else if (s.peek() == '}') {
-                        if (!openBraces)
-                            break;
-                        else
-                            --openBraces;
-                    } else if (s.peek() == ',' && !openBraces)
-                        break;
-
-                    const char c = s.get();
-                    if (c == '\\')
-                        value.append(1, s.get());
-                    else
-                        value.append(1, c);
-                }
+				const auto value = extractValue(s);
 
 				if constexpr (putils::is_unstreamable<std::stringstream, T>::value) {
 					if (value[0] == '"')
