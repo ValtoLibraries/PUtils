@@ -104,6 +104,10 @@ namespace putils {
             );
         }
 
+		Point<Precision, Dimensions> getCenter() const {
+			return { topLeft.x + size.x / 2, topLeft.y + size.y / 2 };
+        }
+
         bool contains(const Point<Precision, 2> & point) const {
             return (topLeft.x <= point.x &&
                     topLeft.x + size.x > point.x &&
@@ -119,7 +123,8 @@ namespace putils {
         );
         pmeta_get_methods(
                 pmeta_reflectible_attribute(&Rect::intersect),
-                pmeta_reflectible_attribute(&Rect::contains)
+                pmeta_reflectible_attribute(&Rect::contains),
+                pmeta_reflectible_attribute(&Rect::getCenter)
         );
         pmeta_get_parents();
     };
@@ -248,6 +253,10 @@ namespace putils {
             );
         }
 
+		Point<Precision, 3> getCenter() const {
+			return { topLeft.x + size.x / 2, topLeft.y + size.y / 2, topLeft.z + size.z / 2 };
+        }
+
         pmeta_get_class_name("Rect3");
         pmeta_get_attributes(
                 pmeta_reflectible_attribute(&Rect::topLeft),
@@ -255,7 +264,8 @@ namespace putils {
         );
         pmeta_get_methods(
                 pmeta_reflectible_attribute(&Rect::intersect),
-                pmeta_reflectible_attribute(&Rect::contains)
+                pmeta_reflectible_attribute(&Rect::contains),
+                pmeta_reflectible_attribute(&Rect::getCenter)
         );
         pmeta_get_parents();
     };
