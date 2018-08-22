@@ -114,7 +114,7 @@ namespace pse {
 #ifdef PSE_TGUI
         public:
             template<typename T, typename = std::enable_if_t<std::is_base_of<tgui::Widget, T>::value>>
-            void addItem(const std::shared_ptr<T> &widget, std::string_view name = "")
+            void addItem(const std::shared_ptr<T> &widget, const std::string & name = "")
             { _tgui.add(widget, name); }
 
             template<typename T, typename = std::enable_if_t<std::is_base_of<tgui::Widget, T>::value>>
